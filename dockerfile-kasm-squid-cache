@@ -1,0 +1,19 @@
+FROM ubuntu:22.04
+
+ENV STARTUPDIR=/dockerstartup
+ENV INST_SCRIPTS=$STARTUPDIR/install
+ENV DEBIAN_FRONTEND=noninteractive
+
+COPY ./src/ubuntu/install/squid/install_squid.sh $INST_SCRIPTS/squid/
+
+RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
+    --mount=target=/var/cache/apt,type=cache,sharing=locked \
+    apt-get update && $INST_SCRIPTS/squid/install_squid.sh
+
+COPY ./src/ubuntu/install/squid/squid.conf /etc/squid/squid.conf
+COPY squid/entrypoint.sh entrypoint.sh
+
+RUN chmod 755 /proc/*/ns/net || true
+
+CMD ["./entrypoint.sh"]
+

@@ -1,0 +1,69 @@
+ARG BASE_TAG="develop"
+ARG BASE_IMAGE="core-ubuntu-noble"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+USER root
+
+ARG CUDA_TOOLKIT_VERSION="12-6"
+ARG PYENV_GIT_TAG="v2.5.1"
+
+ENV HOME=/home/kasm-default-profile
+ENV STARTUPDIR=/dockerstartup
+ENV INST_SCRIPTS=$STARTUPDIR/install
+ENV CUDA_TOOLKIT_VERSION=${CUDA_TOOLKIT_VERSION}
+ENV PYENV_GIT_TAG=${PYENV_GIT_TAG}
+ENV NVIDIA_DRIVER_CAPABILITIES=all
+#ENV no_proxy=localhost,127.0.0.0
+
+WORKDIR $HOME
+
+RUN [ ! -f "$STARTUPDIR/custom_startup.sh" ] && echo "#!/bin/bash" > $STARTUPDIR/custom_startup.sh && chmod +x $STARTUPDIR/custom_startup.sh
+
+######### Customize Container Here ###########
+
+COPY ./src/ubuntu/install/chrome $INST_SCRIPTS/chrome/
+RUN bash $INST_SCRIPTS/chrome/install_chrome.sh  && rm -rf $INST_SCRIPTS/chrome/
+
+COPY ./src/ubuntu/install/vs_code $INST_SCRIPTS/vs_code/
+RUN bash $INST_SCRIPTS/vs_code/install_vs_code.sh  && rm -rf $INST_SCRIPTS/vs_code/
+
+COPY ./src/ubuntu/install/sudo $INST_SCRIPTS/sudo/
+RUN bash $INST_SCRIPTS/sudo/install_sudo.sh  && rm -rf $INST_SCRIPTS/sudo/
+
+COPY ./src/ubuntu/install/cuda $INST_SCRIPTS/cuda/
+RUN bash $INST_SCRIPTS/cuda/install_cuda_toolkit.sh  && rm -rf $INST_SCRIPTS/cuda/
+
+COPY ./src/ubuntu/install/pyenv $INST_SCRIPTS/pyenv/
+RUN bash $INST_SCRIPTS/pyenv/install_pyenv.sh  && rm -rf $INST_SCRIPTS/pyenv/
+
+COPY ./src/ubuntu/install/p11-kit $INST_SCRIPTS/p11-kit/
+RUN bash $INST_SCRIPTS/p11-kit/install_p11-kit.sh  && rm -rf $INST_SCRIPTS/p11-kit/
+
+
+COPY ./src/ubuntu/install/node $INST_SCRIPTS/node/
+RUN bash $INST_SCRIPTS/node/install_node.sh  && rm -rf $INST_SCRIPTS/node/
+
+# Allow trust updates
+RUN echo "ALL ALL=NOPASSWD: /usr/sbin/update-ca-certificates" > /etc/sudoers.d/ca-certs
+
+RUN echo "grep -q 'sudo update-ca-certificates' ~/.bashrc || sudo update-ca-certificates" >> $STARTUPDIR/custom_startup.sh
+RUN echo "grep -q 'export NODE_EXTRA_CA_CERTS' ~/.bashrc || echo export NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt >> ~/.bashrc" >> $STARTUPDIR/custom_startup.sh
+RUN echo "[ -x $STARTUPDIR/process_launch_form.sh ] && $STARTUPDIR/process_launch_form.sh" >> $STARTUPDIR/custom_startup.sh
+
+
+
+COPY ./src/ubuntu/install/pyenv/install_pytorch_as_user.sh $INST_SCRIPTS/
+RUN chmod 755 $INST_SCRIPTS/install_pytorch_as_user.sh && /bin/su -c "HOME=/home/kasm-default-profile $INST_SCRIPTS/install_pytorch_as_user.sh" kasm-user && rm -f $INST_SCRIPTS/install_pytorch_as_user.sh
+
+COPY ./src/ubuntu/install/pyenv/end_custom_startup.sh $INST_SCRIPTS/
+RUN cat "$INST_SCRIPTS/end_custom_startup.sh" >> $STARTUPDIR/custom_startup.sh && rm "$INST_SCRIPTS/end_custom_startup.sh"
+
+######### End Customizations ###########
+
+RUN chown 1000:0 $HOME
+
+ENV HOME=/home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000
+
