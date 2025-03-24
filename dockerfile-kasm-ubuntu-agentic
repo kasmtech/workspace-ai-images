@@ -1,0 +1,44 @@
+ARG BASE_TAG="develop"
+ARG BASE_IMAGE="core-ubuntu-noble"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+USER root
+
+ENV HOME=/home/kasm-default-profile
+ENV STARTUPDIR=/dockerstartup
+ENV INST_SCRIPTS=$STARTUPDIR/install
+#ENV no_proxy=localhost,127.0.0.0
+
+WORKDIR $HOME
+
+RUN [ ! -f "$STARTUPDIR/custom_startup.sh" ] && echo "#!/bin/bash" > $STARTUPDIR/custom_startup.sh && chmod +x $STARTUPDIR/custom_startup.sh
+
+######### Customize Container Here ###########
+
+COPY ./src/ubuntu/install/chrome $INST_SCRIPTS/chrome/
+RUN bash $INST_SCRIPTS/chrome/install_chrome.sh  && rm -rf $INST_SCRIPTS/chrome/
+
+COPY ./src/ubuntu/install/agentic $INST_SCRIPTS/agentic/
+RUN bash $INST_SCRIPTS/agentic/install_agentic.sh  && rm -rf $INST_SCRIPTS/agentic/
+
+COPY ./src/ubuntu/install/sudo $INST_SCRIPTS/sudo/
+RUN bash $INST_SCRIPTS/sudo/install_sudo.sh  && rm -rf $INST_SCRIPTS/sudo/
+
+COPY ./src/ubuntu/install/p11-kit $INST_SCRIPTS/p11-kit/
+RUN bash $INST_SCRIPTS/p11-kit/install_p11-kit.sh  && rm -rf $INST_SCRIPTS/p11-kit/
+
+# Allow trust updates
+RUN echo "ALL ALL=NOPASSWD: /usr/sbin/update-ca-certificates" > /etc/sudoers.d/ca-certs
+
+RUN echo "grep -q 'sudo update-ca-certificates' ~/.bashrc || sudo update-ca-certificates" >> $STARTUPDIR/custom_startup.sh
+RUN echo "grep -q 'export NODE_EXTRA_CA_CERTS' ~/.bashrc || echo export NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt >> ~/.bashrc" >> $STARTUPDIR/custom_startup.sh
+#RUN echo "$STARTUPDIR/process_launch_form.sh" >> $STARTUPDIR/custom_startup.sh
+
+######### End Customizations ###########
+
+RUN chown 1000:0 $HOME
+
+ENV HOME=/home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000

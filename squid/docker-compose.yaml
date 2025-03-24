@@ -1,0 +1,27 @@
+version: '3'
+services:
+  proxy_cache:
+    container_name: proxy_cache
+    image: "squid_proxy_cache"
+    ports:
+      - "3128:3128"
+      - "3129:3129"
+    environment:
+      - TZ=UTC
+    network_mode: "kasm_default_network"
+    networks:
+      - kasm_default_network
+    volumes:
+      - ./ca.pem:/etc/squid/ssl_cert/ca.pem:ro
+      - ./privkey.pem:/etc/squid/ssl_cert/privkey.pem:ro
+      - /var/spool/squid:/var/spool/squid:rw
+      - /var/log/squid:/var/log/squid:rw
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "20"
+networks:
+  kasm_default_network:
+    external: true

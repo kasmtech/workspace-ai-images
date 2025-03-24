@@ -1,0 +1,62 @@
+files: &UNIVERSAL_CHANGE_FILES
+  - src/common/**
+  - ci-scripts/**
+  - .gitlab-ci.yml
+
+multiImages: []
+
+singleImages:
+  - name: ubuntu-noble-anythingllm
+    singleapp: false
+    base: core-ubuntu-noble
+    dockerfile: dockerfile-kasm-ubuntu-anythingllm
+    changeFiles:
+      - dockerfile-kasm-ubuntu-anythingllm
+      - src/ubuntu/install/anythingllm/**
+#  - name: squid-proxy
+#    skiptest: true
+#    singleapp: false
+#    base: ubuntu
+#    dockerfile: dockerfile-kasm-squid-cache
+#    changeFiles:
+#      - dockerfile-kasm-squid-cache
+#      - src/ubuntu/install/squid/**
+  - name: ubuntu-noble-easydiffusion
+    singleapp: false
+    base: core-ubuntu-noble
+    dockerfile: dockerfile-kasm-ubuntu-easydiffusion
+    changeFiles:
+      - dockerfile-kasm-ubuntu-easydiffusion
+      - src/ubuntu/install/easydiffusion/**
+  - name: ubuntu-noble-nvidia
+    singleapp: false
+    base: core-ubuntu-noble
+    dockerfile: dockerfile-kasm-ubuntu-nvidia
+    changeFiles:
+      - dockerfile-kasm-ubuntu-nvidia
+      - src/ubuntu/install/cuda/**
+      - src/ubuntu/install/pyenv/**
+  - name: ubuntu-noble-nvidia-pytorch
+    singleapp: false
+    base: core-ubuntu-noble
+    dockerfile: dockerfile-kasm-ubuntu-nvidia-pytorch
+    changeFiles:
+      - dockerfile-kasm-ubuntu-nvidia-pytorch
+      - src/ubuntu/install/cuda/**
+      - src/ubuntu/install/pyenv/**
+  - name: ubuntu-noble-nvidia-tensorflow
+    singleapp: false
+    base: core-ubuntu-noble
+    dockerfile: dockerfile-kasm-ubuntu-nvidia-tensorflow
+    changeFiles:
+      - dockerfile-kasm-ubuntu-nvidia-tensorflow
+      - src/ubuntu/install/cuda/**
+      - src/ubuntu/install/pyenv/**
+  - name: ubuntu-jammy-nvidia
+    singleapp: false
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-ubuntu-nvidia
+    changeFiles:
+      - dockerfile-kasm-ubuntu-nvidia
+      - src/ubuntu/install/cuda/**
+      - src/ubuntu/install/pyenv/**
