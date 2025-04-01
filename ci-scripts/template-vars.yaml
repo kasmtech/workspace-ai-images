@@ -13,6 +13,8 @@ singleImages:
     changeFiles:
       - dockerfile-kasm-ubuntu-anythingllm
       - src/ubuntu/install/anythingllm/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/p11-kit/**
 #  - name: squid-proxy
 #    skiptest: true
 #    singleapp: false

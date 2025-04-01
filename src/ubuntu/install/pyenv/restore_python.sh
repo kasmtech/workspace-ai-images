@@ -10,10 +10,6 @@ install_python() {
   pyenv install "$VERSION"
   pyenv global "$VERSION"
   pip install --upgrade pip
-  if [ -n "$EXTRA_PACKAGES" ]; then
-    echo "Installing $EXTRA_PACKAGES"
-    pip install $EXTRA_PACKAGES
-  fi  
 }
 
 # Function to restore pyenv versions
@@ -42,13 +38,30 @@ restore_pyenv() {
 
         eval "$(pyenv init -)"
         eval "$(pyenv init --path)"
-
-        if [ -n "$EXTRA_PACKAGES" ]; then
-          echo "Installing $EXTRA_PACKAGES"
-          pip install $EXTRA_PACKAGES
-        fi
     fi
-    
+
+
+    if [ -n "$EXTRA_PACKAGES" ]; then
+      echo "Installing $EXTRA_PACKAGES"
+      pip install $EXTRA_PACKAGES
+    fi
+
+    if [ -n "$ML_FRAMEWORK" ]; then
+        case "$ML_FRAMEWORK" in
+            "TENSORFLOW")
+                echo "Installing TensorFlow..."
+                pip install 'tensorflow[and-cuda]'
+                ;;
+            "PYTORCH")
+                echo "Installing PyTorch..."
+                pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
+                ;;
+            *)
+                echo "Unknown ML framework: $ML_FRAMEWORK"
+                echo "Supported frameworks: TensorFlow, PyTorch"
+                ;;
+        esac
+    fi
 }
 
 # Usage examples:

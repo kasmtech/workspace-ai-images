@@ -23,11 +23,14 @@ RUN bash $INST_SCRIPTS/anythingllm/install_anythingllm.sh  && rm -rf $INST_SCRIP
 
 ######### End Customizations ###########
 
-RUN chown 1000:0 $HOME
+RUN $STARTUPDIR/set_user_permission.sh $HOME && \
+    rm -f /etc/X11/xinit/Xclients && \
+    chown 1000:0 $HOME && \
+    mkdir -p /home/kasm-user && \
+    chown 1000:0 /home/kasm-user
 
 ENV HOME=/home/kasm-user
 WORKDIR $HOME
-RUN mkdir -p $HOME && chown -R 1000:0 $HOME
 
 USER 1000
 

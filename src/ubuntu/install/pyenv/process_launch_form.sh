@@ -3,6 +3,7 @@ set -ex
 
 PYTHON_VERSION="$(jq -r '.python_version // empty' /tmp/launch_selections.json)"
 export EXTRA_PACKAGES="$(jq -r '.pip_packages // empty' /tmp/launch_selections.json)"
+export ML_FRAMEWORK="$(jq -r '.ml_framework // empty' /tmp/launch_selections.json)"
 
 source ~/.bashrc || echo "Warning: Failed to source .bashrc" >> /tmp/setup.log
 
