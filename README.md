@@ -10,6 +10,9 @@ See workspace specific documentation:
 
 [Tensorflow Image](./docs/tensorflow/README.md) - CUDA-enabled base image with [Tensorflow](http://tensorflow.org/).
 
+# Setting up the Agent servers for running GPU accelerated workloads
+
+Please refer to the [GPU Setup](./GPU_SETUP.md) page for details on pre-requisites.
 
 # Manual Deployment
 
