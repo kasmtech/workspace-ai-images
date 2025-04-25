@@ -64,3 +64,18 @@ nvidia-ctk runtime configure --runtime=docker
 ```
 
 Once the steps are completed the system should be rebooted.
+
+# Accelerating workspaces
+
+Please ensure to set the correct enivronment variables in your Workspace configuration by modifying your Docker Run configuration to include:
+```json
+{
+  "environment": {
+    "NVIDIA_DRIVER_CAPABILITIES": "all"
+  }
+}
+```
+
+For more details on the available environment settings please see https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/docker-specialized.html.
+
+Images in the AI workspaces do not require this step as they are pre-baked into the image.
