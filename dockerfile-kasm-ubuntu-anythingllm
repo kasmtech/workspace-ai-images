@@ -21,6 +21,9 @@ RUN bash $INST_SCRIPTS/p11-kit/install_p11-kit.sh  && rm -rf $INST_SCRIPTS/p11-k
 COPY ./src/ubuntu/install/anythingllm $INST_SCRIPTS/anythingllm/
 RUN bash $INST_SCRIPTS/anythingllm/install_anythingllm.sh  && rm -rf $INST_SCRIPTS/anythingllm/
 
+COPY ./src/ubuntu/install/only_office $INST_SCRIPTS/only_office/
+RUN bash $INST_SCRIPTS/only_office/install_only_office.sh  && rm -rf $INST_SCRIPTS/only_office/
+
 ######### End Customizations ###########
 
 RUN $STARTUPDIR/set_user_permission.sh $HOME && \
