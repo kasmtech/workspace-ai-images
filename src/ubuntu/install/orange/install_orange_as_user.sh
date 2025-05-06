@@ -10,7 +10,7 @@ pyenv virtualenv 3.10 orange
 pyenv local orange
 
 python -m pip install --upgrade pip
-pip install pip install PyQt5 PyQtWebEngine
+pip install PyQt5 PyQtWebEngine
 pip install orange3
 
 python -m pip cache purge
