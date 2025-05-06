@@ -12,7 +12,7 @@ chmod +x "$(dirname "$0")/install_orange_as_user.sh"
 cat >"/opt/orange/launch_orange.sh"<<EOL
 #!/bin/bash
 cd "/opt/orange"
-python -m Orange.canvas "$@"
+python -m Orange.canvas
 EOL
 chmod +x "/opt/orange/launch_orange.sh"
 chown kasm-user:kasm-user "/opt/orange/launch_orange.sh"
@@ -25,8 +25,8 @@ Name=Orange Data Mining
 GenericName=Data Mining Suite
 Comment=Explore, analyze, and visualize your data
 Icon=/opt/orange/orange-canvas.png
-Path="/home/kasm-user/orange"
-Exec="/home/kasm-user/orange/launch_orange.sh" %f
+Path="/opt/orange"
+Exec="/opt/orange/launch_orange.sh" %f
 Terminal=false
 MimeType=application/x-extension-ows;
 Categories=Science;Education;ArtificialIntelligence;DataVisualization;NumericalAnalysis;Qt;
@@ -34,4 +34,4 @@ Keywords=Machine Learning;Scientific Visualization;Statistical Analysis;
 EOL
 chmod +x /usr/share/applications/orange.desktop
 chown kasm-user:kasm-user /usr/share/applications/orange.desktop
-
+ln -s /usr/share/applications/orange.desktop "$HOME/Desktop/orange.desktop"
