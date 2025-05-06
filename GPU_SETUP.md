@@ -72,7 +72,7 @@ Once the steps are completed the system should be rebooted.
 
 # Accelerating workspaces
 
-**Note:** This step is required for workspace images that are _not_ in the Kasm AI Image Repository and if you're running Kasm versions prior to 1.17.
+**Note:** This step is required for workspace images that are _not_ in the [Kasm AI Registry](https://ai.registry.kasmweb.com/) and if you're running Kasm versions prior to 1.17.
 
 Please ensure to set the correct enivronment variables in your Workspace configuration by modifying your Docker Run configuration to include:
 ```json
@@ -82,5 +82,4 @@ Please ensure to set the correct enivronment variables in your Workspace configu
   }
 }
 ```
-
 For more details on the available environment settings please see https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/docker-specialized.html.
