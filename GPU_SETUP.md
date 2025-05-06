@@ -11,6 +11,11 @@ This page describes the steps required to support GPU-accelerated workloads on K
 
 **Warning:** Installing NVIDIA drivers via multiple installation methods can result in your system not booting correctly.
 
+## Installation sequence
+
+1. Install NVIDIA drivers (this may require a system reboot to complete)
+2. Install NVIDIA Container Toolkit (if Kasm is already installed restart the docker service e.g. `sudo systemctl restart docker.`)
+
 ## Ubuntu 24.04 LTS
 
 For Ubuntu 24.04 systems we provide the following script that will add the Ubuntu PPA repository, install the latest NVIDIA driver through the `ubuntu-drivers` tool and install the NVIDIA Container Toolkit.
@@ -67,6 +72,8 @@ Once the steps are completed the system should be rebooted.
 
 # Accelerating workspaces
 
+**Note:** This step is required for workspace images that are _not_ in the Kasm AI Image Repository and if you're running Kasm versions prior to 1.17.
+
 Please ensure to set the correct enivronment variables in your Workspace configuration by modifying your Docker Run configuration to include:
 ```json
 {
@@ -77,5 +84,3 @@ Please ensure to set the correct enivronment variables in your Workspace configu
 ```
 
 For more details on the available environment settings please see https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/docker-specialized.html.
-
-Images in the AI workspaces do not require this step as they are pre-baked into the image.
