@@ -8,4 +8,4 @@ tar xzf refine.tar.gz
 mv "openrefine-${refine_version}" "openrefine"
 rm refine.tar.gz
 
-chown -R 1000:0 /opt/refine
+chown -R 1000:0 /opt/openrefine
