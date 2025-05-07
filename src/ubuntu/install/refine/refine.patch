@@ -1,0 +1,9 @@
+--- refine.bak	2025-05-07 15:23:42.522685285 +0100
++++ refine	2025-05-07 15:29:02.847950884 +0100
+@@ -459,6 +459,7 @@
+     check_running
+
+     if [ "$RUNNING" ] ; then
++        xdg-open "http://${REFINE_HOST_INTERNAL}:${REFINE_PORT}/"
+         warn "OpenRefine is already running."
+     fi
