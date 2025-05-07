@@ -7,6 +7,7 @@ ENV HOME=/home/kasm-default-profile
 ENV STARTUPDIR=/dockerstartup
 ENV INST_SCRIPTS=$STARTUPDIR/install
 ENV JAVA_VERSION="17-jre"
+ENV REFINE_VERSION="3.9.3"
 WORKDIR $HOME
 
 ######### Customize Container Here ###########
@@ -17,6 +18,9 @@ RUN bash $INST_SCRIPTS/orange/install_orange.sh  && rm -rf $INST_SCRIPTS/orange/
 
 COPY ./src/ubuntu/install/temurin_java $INST_SCRIPTS/temurin_java/
 RUN bash $INST_SCRIPTS/temurin_java/install_temurin_java.sh  && rm -rf $INST_SCRIPTS/temurin_java/
+
+COPY ./src/ubuntu/install/refine $INST_SCRIPTS/refine/
+RUN bash $INST_SCRIPTS/refine/install_refine.sh  && rm -rf $INST_SCRIPTS/refine/
 
 ######### End Customizations ###########
 
