@@ -36,6 +36,7 @@ chmod +x /usr/share/applications/orange.desktop
 chown kasm-user:kasm-user /usr/share/applications/orange.desktop
 ln -s /usr/share/applications/orange.desktop "$HOME/Desktop/orange.desktop"
 
+mkdir -p /home/kasm-default-profile/.config
 cat >/home/kasm-default-profile/.config/biolab.si/Orange.ini<<EOL
 [notifications]
 displayed="{'13092019-statisticsRequest', '16102019-tutorialOffer'}"
@@ -44,4 +45,4 @@ displayed="{'13092019-statisticsRequest', '16102019-tutorialOffer'}"
 launch-count=1
 show-welcome-screen=true
 EOL
-chown kasm-user:kasm-user /home/kasm-default-profile/.config/biolab.si/Orange.ini
+chown -R kasm-user:kasm-user /home/kasm-default-profile/.config
