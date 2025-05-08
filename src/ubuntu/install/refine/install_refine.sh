@@ -24,6 +24,8 @@ rm "openrefine-llm-extension.zip"
 
 chown -R 1000:0 /opt/openrefine
 
+mkdir -p /home/kasm-default-profile/.local/share/openrefine/llm-extension
+chown -R 1000:0 /home/kasm-default-profile/.local
 
 refine_logo=/opt/openrefine/webapp/modules/core/images/logo-gem-126.png
 cat >/usr/share/applications/openrefine.desktop<<EOL
