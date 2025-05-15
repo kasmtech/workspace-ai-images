@@ -12,9 +12,11 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
+COPY ./src/ubuntu/install/only_office $INST_SCRIPTS/only_office/
+RUN bash $INST_SCRIPTS/only_office/install_only_office.sh  && rm -rf $INST_SCRIPTS/only_office/
+
 COPY ./src/ubuntu/install/orange $INST_SCRIPTS/orange/
 RUN bash $INST_SCRIPTS/orange/install_orange.sh  && rm -rf $INST_SCRIPTS/orange/
-
 
 COPY ./src/ubuntu/install/temurin_java $INST_SCRIPTS/temurin_java/
 RUN bash $INST_SCRIPTS/temurin_java/install_temurin_java.sh  && rm -rf $INST_SCRIPTS/temurin_java/
