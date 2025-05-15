@@ -20,20 +20,11 @@
 
 #   Copyright (C) 2011-2019 University of Waikato, Hamilton, NZ
 
-#   Shell script for starting Weka under a *nix system. Assumes that there
-#   is a JRE in jre/* (Linux) or ../runtime (Mac) relative to the directory that contains this script unless
-#   the -jvm option is used to specify the location of the java executable to use.
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 CLASSPATH="${CLASSPATH}:$DIR/weka.jar"
 
-# On Linux, the JVM is in a folder called jre, otherwise assume we are on a Mac.
-if [ -d "$DIR/jre" ]
-then
-  JCMD="$DIR/jre/*/bin/java"
-else
-  JCMD="$DIR/../runtime/Contents/Home/bin/java"
-fi
+JCMD=/usr/bin/java
 
 # check options
 MEMORY=

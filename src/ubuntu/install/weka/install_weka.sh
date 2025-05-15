@@ -11,8 +11,8 @@ unzip "weka.zip"
 mv "/opt/weka-${weka_version//\./-}" /opt/weka
 rm -rf /opt/weka/jre
 
-sed -i 's|JCMD="$DIR/jre/\*/bin/java"|JCMD=/usr/bin/java|g' /opt/weka/weka.sh
-cp "$(dirname "$0")/weka.ico" /opt/weka
+cp "$(dirname "$0")/weka.sh" /opt/weka/
+cp "$(dirname "$0")/weka.ico" /opt/weka/
 
 chown -R 1000:0 /opt/weka
 
@@ -27,7 +27,7 @@ GenericName=Data Transformation Tool
 Comment=Data Transformation tool
 Icon=${weka_logo}
 Path="/opt/weka"
-Exec="/opt/weka/weka"
+Exec="/opt/weka/weka.sh"
 Terminal=false
 MimeType=application/x-extension-ows;
 Categories=Science;Education;ArtificialIntelligence;DataVisualization;NumericalAnalysis;Java;
