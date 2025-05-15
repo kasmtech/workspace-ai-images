@@ -22,6 +22,9 @@ RUN bash $INST_SCRIPTS/temurin_java/install_temurin_java.sh  && rm -rf $INST_SCR
 COPY ./src/ubuntu/install/refine $INST_SCRIPTS/refine/
 RUN bash $INST_SCRIPTS/refine/install_refine.sh  && rm -rf $INST_SCRIPTS/refine/
 
+COPY ./src/ubuntu/install/weka $INST_SCRIPTS/weka/
+RUN bash $INST_SCRIPTS/weka/install_weka.sh  && rm -rf $INST_SCRIPTS/weka/
+
 ######### End Customizations ###########
 
 RUN chown 1000:0 $HOME
