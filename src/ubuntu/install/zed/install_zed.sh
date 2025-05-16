@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -ex
 
-cd "$(dirname "$0")"
+cd "/home/kasm-default-profile"
 wget -O install.sh https://zed.dev/install.sh
-chown 1000:0 "$(dirname "$0")/install.sh"
+chown 1000:0 "/home/kasm-default-profile/install.sh"
 /bin/su -c "HOME=/home/kasm-default-profile $(dirname "$0")/install.sh" kasm-user
+rm "/home/kasm-default-profile/install.sh"
