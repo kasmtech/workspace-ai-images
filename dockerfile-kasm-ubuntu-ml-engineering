@@ -27,6 +27,9 @@ RUN bash $INST_SCRIPTS/refine/install_refine.sh  && rm -rf $INST_SCRIPTS/refine/
 COPY ./src/ubuntu/install/weka $INST_SCRIPTS/weka/
 RUN bash $INST_SCRIPTS/weka/install_weka.sh  && rm -rf $INST_SCRIPTS/weka/
 
+COPY ./src/ubuntu/install/zed $INST_SCRIPTS/zed/
+RUN bash $INST_SCRIPTS/weka/install_zed.sh  && rm -rf $INST_SCRIPTS/zed/
+
 ######### End Customizations ###########
 
 RUN chown 1000:0 $HOME
