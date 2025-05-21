@@ -8,6 +8,7 @@ else
   echo "Installing VS Code extensions..."
   # Split by comma, trim whitespace, and install each extension
   IFS=',' read -ra EXTENSIONS <<< "$VSCODE_EXTENSIONS"
+  unset VSCODE_EXTENSIONS
   for ext in "${EXTENSIONS[@]}"; do
     # Trim leading and trailing whitespace
     EXTENSION=$(echo "$ext" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
