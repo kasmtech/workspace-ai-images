@@ -13,7 +13,7 @@ else
     EXTENSION=$(echo "$ext" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
     if [ -n "$EXTENSION" ]; then
       echo "Installing: $EXTENSION"
-      runuser -l kasm-user -c "HOME=$HOME -c 'code --install-extension \"$EXTENSION\"'"
+      su -c "HOME=$HOME code --install-extension \"$EXTENSION\"" kasm-user
     fi
   done
 fi
