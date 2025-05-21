@@ -34,7 +34,9 @@ RUN bash $INST_SCRIPTS/only_office/install_only_office.sh  && rm -rf $INST_SCRIP
 
 ######### End Customizations ###########
 
-RUN cat "$INST_SCRIPTS/custom_startup/end_custom_startup.fragment" >> $STARTUPDIR/custom_startup.sh && rm "$INST_SCRIPTS/custom_startup/end_custom_startup.fragment"
+RUN cat "$INST_SCRIPTS/custom_startup/end_custom_startup.fragment" >> $STARTUPDIR/custom_startup.sh &&  \
+    chmod -R 0755 "$STARTUPDIR/custom_startup" && \
+    rm "$INST_SCRIPTS/custom_startup/end_custom_startup.fragment"
 
 RUN $STARTUPDIR/set_user_permission.sh $HOME && \
     rm -f /etc/X11/xinit/Xclients && \
