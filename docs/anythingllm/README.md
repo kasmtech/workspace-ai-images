@@ -17,7 +17,9 @@
 }'
 ```
 should return output from the model.
+
 5. Ensure any firewall rules permit access to the Ollama URL
+
 6. Set the following environment variables inside the `Docker Run Config` of the workspace: 
 ```json
 {
@@ -33,4 +35,5 @@ should return output from the model.
   }
 }
 ```
+
 7. Start an AnythingLLM workspace and confirm that AnythingLLM is pre-configured - you should be able to start a chat right away with the private model.
