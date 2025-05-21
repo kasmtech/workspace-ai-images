@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -ex
 mkdir -p "$HOME/.local/share"
 cp -R "$(dirname "$0")/keyrings" "$HOME/.local/share"
 chown -R 1000:0 "$HOME/"
