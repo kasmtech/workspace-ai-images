@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
+VSCODE_EXTENSIONS=$1
 # Check if VSCODE_EXTENSIONS is set
 if [ -z "$VSCODE_EXTENSIONS" ]; then
   echo "No VSCODE_EXTENSIONS environment variable found."

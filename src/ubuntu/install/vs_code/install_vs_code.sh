@@ -17,7 +17,7 @@ chmod +x $HOME/Desktop/code.desktop
 chown 1000:1000 $HOME/Desktop/code.desktop
 rm vs_code.deb
 
-"$(dirname "$0")/install_extensions.sh"
+"$(dirname "$0")/install_extensions.sh" "$1"
 
 # Cleanup for app layer
 chown -R 1000:0 $HOME

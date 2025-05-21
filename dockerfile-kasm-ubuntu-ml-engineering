@@ -8,7 +8,7 @@ ENV STARTUPDIR=/dockerstartup
 ENV INST_SCRIPTS=$STARTUPDIR/install
 ENV JAVA_VERSION="17-jre"
 ENV REFINE_VERSION="3.9.3"
-ENV VSCODE_EXTENSIONS="ms-toolsai.datawrangler"
+ARG VSCODE_EXTENSIONS="ms-toolsai.datawrangler"
 WORKDIR $HOME
 
 ######### Customize Container Here ###########
@@ -30,7 +30,7 @@ RUN bash $INST_SCRIPTS/weka/install_weka.sh  && rm -rf $INST_SCRIPTS/weka/
 
 # We already have VS Code from base, install the extensions
 COPY ./src/ubuntu/install/vs_code $INST_SCRIPTS/vs_code/
-RUN bash $INST_SCRIPTS/vs_code/install_extensions.sh  && rm -rf $INST_SCRIPTS/vs_code/
+RUN bash $INST_SCRIPTS/vs_code/install_extensions.sh "$VSCODE_EXTENSIONS"  && rm -rf $INST_SCRIPTS/vs_code/
 
 ######### End Customizations ###########
 
