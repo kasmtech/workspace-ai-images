@@ -8,6 +8,7 @@ ENV STARTUPDIR=/dockerstartup
 ENV INST_SCRIPTS=$STARTUPDIR/install
 ENV JAVA_VERSION="17-jre"
 ENV REFINE_VERSION="3.9.3"
+ENV VSCODE_EXTENSIONS="ms-toolsai.datawrangler"
 WORKDIR $HOME
 
 ######### Customize Container Here ###########

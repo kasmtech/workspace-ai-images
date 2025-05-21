@@ -17,11 +17,23 @@ chmod +x $HOME/Desktop/code.desktop
 chown 1000:1000 $HOME/Desktop/code.desktop
 rm vs_code.deb
 
-# Conveniences for python development
-apt-get update
-apt-get install -y python3-setuptools \
-                   python3-venv \
-                   python3-virtualenv
+
+# Check if VSCODE_EXTENSIONS is set
+if [ -z "$VSCODE_EXTENSIONS" ]; then
+  echo "No VSCODE_EXTENSIONS environment variable found."
+else
+  echo "Installing VS Code extensions..."
+  # Split by comma, trim whitespace, and install each extension
+  IFS=',' read -ra EXTENSIONS <<< "$VSCODE_EXTENSIONS"
+  for ext in "${EXTENSIONS[@]}"; do
+    # Trim leading and trailing whitespace
+    EXTENSION=$(echo "$ext" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    if [ -n "$EXTENSION" ]; then
+      echo "Installing: $EXTENSION"
+      runuser -l kasm-user -c "HOME=$HOME -c 'code --install-extension \"$EXTENSION\"'"
+    fi
+  done
+fi
 
 # Cleanup for app layer
 chown -R 1000:0 $HOME
