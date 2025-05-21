@@ -32,6 +32,10 @@ RUN bash $INST_SCRIPTS/weka/install_weka.sh  && rm -rf $INST_SCRIPTS/weka/
 COPY ./src/ubuntu/install/vs_code $INST_SCRIPTS/vs_code/
 RUN bash $INST_SCRIPTS/vs_code/install_extensions.sh "$VSCODE_EXTENSIONS"  && rm -rf $INST_SCRIPTS/vs_code/
 
+COPY ./src/ubuntu/config/default_keyring $INST_SCRIPTS/default_keyring/
+RUN bash $INST_SCRIPTS/default_keyring/install_default_keyring.sh  && rm -rf $INST_SCRIPTS/default_keyring/
+
+
 ######### End Customizations ###########
 
 RUN chown 1000:0 $HOME
