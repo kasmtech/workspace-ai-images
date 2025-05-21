@@ -11,7 +11,7 @@
 3. Pull a model (e.g. `ollama pull phi4:latest`)
 4. Ensure ollama is serving the model, e.g:
 ```shell
-# curl -X POST http://<ollama host>:11434/api/generate -d '{
+$ curl -X POST http://<ollama host>:11434/api/generate -d '{
   "model": "phi4:latest",
   "prompt": "hi, please identify yourself"
 }'
