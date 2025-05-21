@@ -28,6 +28,10 @@ RUN bash $INST_SCRIPTS/refine/install_refine.sh  && rm -rf $INST_SCRIPTS/refine/
 COPY ./src/ubuntu/install/weka $INST_SCRIPTS/weka/
 RUN bash $INST_SCRIPTS/weka/install_weka.sh  && rm -rf $INST_SCRIPTS/weka/
 
+# We already have VS Code from base, install the extensions
+COPY ./src/ubuntu/install/vs_code $INST_SCRIPTS/vs_code/
+RUN bash $INST_SCRIPTS/vs_code/install_extensions.sh  && rm -rf $INST_SCRIPTS/vs_code/
+
 ######### End Customizations ###########
 
 RUN chown 1000:0 $HOME
