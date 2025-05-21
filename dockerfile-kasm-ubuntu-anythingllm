@@ -9,6 +9,12 @@ ENV INST_SCRIPTS=$STARTUPDIR/install
 
 WORKDIR $HOME
 
+
+COPY ./src/ubuntu/config/custom_startup $INST_SCRIPTS/custom_startup/
+RUN mv "$INST_SCRIPTS/custom_startup/start_custom_startup.fragment" "$STARTUPDIR/custom_startup.sh" \
+    && chmod +x "$STARTUPDIR/custom_startup.sh" \
+    && mkdir "$STARTUPDIR/custom_startup"
+
 ######### Customize Container Here ###########
 
 
@@ -19,12 +25,16 @@ COPY ./src/ubuntu/install/p11-kit $INST_SCRIPTS/p11-kit/
 RUN bash $INST_SCRIPTS/p11-kit/install_p11-kit.sh  && rm -rf $INST_SCRIPTS/p11-kit/
 
 COPY ./src/ubuntu/install/anythingllm $INST_SCRIPTS/anythingllm/
-RUN bash $INST_SCRIPTS/anythingllm/install_anythingllm.sh  && rm -rf $INST_SCRIPTS/anythingllm/
+RUN bash $INST_SCRIPTS/anythingllm/install_anythingllm.sh && \
+    cp $INST_SCRIPTS/anythingllm/custom_startup.sh "$STARTUPDIR/custom_startup/100-anythingllm.once.sh"  && \
+    rm -rf $INST_SCRIPTS/anythingllm/
 
 COPY ./src/ubuntu/install/only_office $INST_SCRIPTS/only_office/
 RUN bash $INST_SCRIPTS/only_office/install_only_office.sh  && rm -rf $INST_SCRIPTS/only_office/
 
 ######### End Customizations ###########
+
+RUN cat "$INST_SCRIPTS/custom_startup/end_custom_startup.fragment" >> $STARTUPDIR/custom_startup.sh && rm "$INST_SCRIPTS/custom_startup/end_custom_startup.fragment"
 
 RUN $STARTUPDIR/set_user_permission.sh $HOME && \
     rm -f /etc/X11/xinit/Xclients && \

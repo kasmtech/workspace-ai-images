@@ -11,6 +11,11 @@ ENV REFINE_VERSION="3.9.3"
 ARG VSCODE_EXTENSIONS="ms-toolsai.datawrangler"
 WORKDIR $HOME
 
+COPY ./src/ubuntu/config/custom_startup $INST_SCRIPTS/custom_startup/
+RUN mv "$INST_SCRIPTS/custom_startup/start_custom_startup.fragment" "$STARTUPDIR/custom_startup.sh" \
+    && chmod +x "$STARTUPDIR/custom_startup.sh" \
+    && mkdir "$STARTUPDIR/custom_startup"
+
 ######### Customize Container Here ###########
 
 COPY ./src/ubuntu/install/only_office $INST_SCRIPTS/only_office/
@@ -37,6 +42,7 @@ RUN bash $INST_SCRIPTS/default_keyring/install_default_keyring.sh  && rm -rf $IN
 
 
 ######### End Customizations ###########
+RUN cat "$INST_SCRIPTS/custom_startup/end_custom_startup.fragment" >> $STARTUPDIR/custom_startup.sh && rm "$INST_SCRIPTS/custom_startup/end_custom_startup.fragment"
 
 RUN chown 1000:0 $HOME
 

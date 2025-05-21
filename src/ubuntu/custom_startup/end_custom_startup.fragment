@@ -1,0 +1,27 @@
+
+# Function to handle termination gracefully
+cleanup() {
+    echo -e "\nScript terminated."
+    exit 0
+}
+
+# Set up trap to catch SIGINT (Ctrl+C) and SIGTERM
+trap cleanup SIGINT SIGTERM
+
+# Main loop that sleeps most of the time
+while true; do
+
+    for script in "${CUSTOM_STARTUP_DIR}"/*.loop.sh; do
+        # Check if the glob expanded to actual files
+        if [ -f "$script" ]; then
+            echo "Running: $(basename "$script")"
+            chmod +x "$script"
+            "$script"
+        fi
+    done
+    sleep 5
+
+    # Optional: print a timestamp to show it's still running
+    # Comment this out if you want completely silent operation
+    echo "Still running: $(date)"
+done
