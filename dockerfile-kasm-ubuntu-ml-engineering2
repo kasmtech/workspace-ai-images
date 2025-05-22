@@ -7,7 +7,7 @@ ENV STARTUPDIR=/dockerstartup
 ENV INST_SCRIPTS=$STARTUPDIR/install
 USER root
 COPY ./src/ubuntu/install /install
-RUN chmod +x /install/prep.sh && \
+RUN echo "In Dockerfile RUN, IMAGE_ITEMS is: [${IMAGE_ITEMS}]" && chmod +x /install/prep.sh && \
     /install/prep.sh "${IMAGE_ITEMS},_config/custom_startup" && \
     chmod +x /install/main_install.sh && \
     cp /install/main_install.sh $INST_SCRIPTS
