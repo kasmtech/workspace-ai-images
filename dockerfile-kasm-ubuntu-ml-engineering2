@@ -3,16 +3,18 @@ ARG BASE_IMAGE="ubuntu-noble-nvidia"
 ARG IMAGE_ITEMS="only_office,orange,temurin_java,refine,weka,vs_code,_config/default_keyring"
 
 FROM ubuntu AS builder
+ARG IMAGE_ITEMS
 ENV STARTUPDIR=/dockerstartup
 ENV INST_SCRIPTS=$STARTUPDIR/install
 USER root
 COPY ./src/ubuntu/install /install
-RUN echo "In Dockerfile RUN, IMAGE_ITEMS is: [${IMAGE_ITEMS}]" && chmod +x /install/prep.sh && \
+RUN chmod +x /install/prep.sh && \
     /install/prep.sh "${IMAGE_ITEMS},_config/custom_startup" && \
     chmod +x /install/main_install.sh && \
     cp /install/main_install.sh $INST_SCRIPTS
 
 FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+ARG IMAGE_ITEMS
 ENV STARTUPDIR=/dockerstartup
 ENV INST_SCRIPTS=$STARTUPDIR/install
 
