@@ -20,11 +20,6 @@ set -ex
 # --- Script Arguments & Environment Variables ---
 IMAGE_ITEMS_LIST="$1"
 
-# INST_SCRIPTS is an environment variable pointing to the base directory
-# where items were copied by a previous prep.sh, e.g., /opt/startup/install
-# The individual install_*.sh scripts are expected in a subdir named "install" under INST_SCRIPTS
-INSTALLER_SCRIPTS_BASE_DIR="${INST_SCRIPTS}/install"
-
 # --- Logging Function ---
 log() {
     echo "[main_install.sh] $(date '+%Y-%m-%d %H:%M:%S') - $1"
@@ -34,7 +29,6 @@ log() {
 log "Starting main installation process."
 log "IMAGE_ITEMS list received: '${IMAGE_ITEMS_LIST}'"
 log "INST_SCRIPTS (base for item content): '${INST_SCRIPTS}'"
-log "Base directory for installer scripts (install_*.sh): '${INSTALLER_SCRIPTS_BASE_DIR}'"
 
 mv "$INST_SCRIPTS/_config/custom_startup/start_custom_startup.fragment" "$STARTUPDIR/custom_startup.sh"
 chmod +x "$STARTUPDIR/custom_startup.sh"
@@ -55,11 +49,6 @@ if [ ! -d "${INST_SCRIPTS}" ]; then
     exit 1
 fi
 
-if [ ! -d "${INSTALLER_SCRIPTS_BASE_DIR}" ];then
-    log "Error: Base directory for installer scripts (INSTALLER_SCRIPTS_BASE_DIR='${INSTALLER_SCRIPTS_BASE_DIR}') does not exist." >&2
-    log "Please ensure that the 'install' subdirectory containing install_*.sh scripts is present under '${INST_SCRIPTS}'." >&2
-    exit 1
-fi
 
 # Process each item from the comma-separated list
 echo "${IMAGE_ITEMS_LIST}" | tr ',' '\n' | while IFS= read -r item_path_from_arg || [ -n "${item_path_from_arg}" ]; do
@@ -77,7 +66,7 @@ echo "${IMAGE_ITEMS_LIST}" | tr ',' '\n' | while IFS= read -r item_path_from_arg
     item_basename=$(basename "${item_path}")
 
     # Construct the relative path for the specific install script
-    # (relative to INSTALLER_SCRIPTS_BASE_DIR)
+    # (relative to INST_SCRIPTS)
     install_script_relative_path=""
     if [ "${item_directory}" = "." ]; then
         # Item is at the root level, e.g., "only_office"
@@ -89,7 +78,7 @@ echo "${IMAGE_ITEMS_LIST}" | tr ',' '\n' | while IFS= read -r item_path_from_arg
         install_script_relative_path="${item_directory}/install_${item_basename}.sh"
     fi
 
-    FULL_INSTALL_SCRIPT_PATH="${INSTALLER_SCRIPTS_BASE_DIR}/${install_script_relative_path}"
+    FULL_INSTALL_SCRIPT_PATH="${INST_SCRIPTS}/${install_script_relative_path}"
 
     log "Looking for individual installer script: ${FULL_INSTALL_SCRIPT_PATH}"
 
