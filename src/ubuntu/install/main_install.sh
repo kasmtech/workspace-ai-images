@@ -96,6 +96,7 @@ done
 
 cat "$INST_SCRIPTS/_config/custom_startup/end_custom_startup.fragment" >> "$STARTUPDIR/custom_startup.sh"
 rm -rf "$INST_SCRIPTS"
+rm -rf /var/lib/apt/lists/*
 
 chown 1000:0 "$HOME"
 

@@ -7,13 +7,14 @@ ARG IMAGE_ITEMS
 ENV STARTUPDIR=/dockerstartup
 ENV INST_SCRIPTS=$STARTUPDIR/install
 USER root
+
 COPY ./src/ubuntu/install /install
 RUN chmod +x /install/prep.sh && \
     /install/prep.sh "${IMAGE_ITEMS},_config/custom_startup" && \
     chmod +x /install/main_install.sh && \
     cp /install/main_install.sh $INST_SCRIPTS
 
-FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG as intermediate
 ARG IMAGE_ITEMS
 ENV STARTUPDIR=/dockerstartup
 ENV INST_SCRIPTS=$STARTUPDIR/install
@@ -29,9 +30,15 @@ COPY --from=builder ${INST_SCRIPTS} ${INST_SCRIPTS}
 
 RUN "${INST_SCRIPTS}/main_install.sh" "${IMAGE_ITEMS}"
 
-######### Customize Container Here ###########
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+ENV STARTUPDIR=/dockerstartup
+ENV INST_SCRIPTS=$STARTUPDIR/install
 
-######### End Customizations ###########
+ENV HOME=/home/kasm-default-profile
+WORKDIR $HOME
+USER root
+
+COPY --from=intermediate / /
 
 ENV HOME=/home/kasm-user
 WORKDIR $HOME
