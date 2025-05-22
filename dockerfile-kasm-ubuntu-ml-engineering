@@ -8,7 +8,7 @@ ENV STARTUPDIR=/dockerstartup
 ENV INST_SCRIPTS=$STARTUPDIR/install
 ENV JAVA_VERSION="17-jre"
 ENV REFINE_VERSION="3.9.3"
-ARG VSCODE_EXTENSIONS="ms-toolsai.datawrangler"
+ARG VSCODE_EXTENSIONS="ms-toolsai.datawrangler,saoudrizwan.claude-dev"
 WORKDIR $HOME
 
 COPY ./src/ubuntu/config/custom_startup $INST_SCRIPTS/custom_startup/
