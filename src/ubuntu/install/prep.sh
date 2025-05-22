@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 # First command-line argument is the comma-separated list of items
 ITEMS_TO_PROCESS="$1"

@@ -13,7 +13,7 @@
 # If IMAGE_ITEMS contains "my_app", it will look for /opt/app_data/install/install_my_app.sh.
 
 # --- Configuration & Safety ---
-set -e # Exit immediately if a command exits with a non-zero status.
+set -ex
 # set -u # Treat unset variables as an error (optional, for stricter scripting).
 # set -o pipefail # Causes a pipeline to return the exit status of the last command that exited with a non-zero status (optional).
 

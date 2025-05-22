@@ -23,9 +23,9 @@ ARG VSCODE_EXTENSIONS="ms-toolsai.datawrangler,saoudrizwan.claude-dev"
 WORKDIR $HOME
 USER root
 
-COPY --from=builder ${INST_SCRIPTS}/ ${INST_SCRIPTS}/
+COPY --from=builder ${INST_SCRIPTS} ${INST_SCRIPTS}
 
-RUN ${INST_SCRIPTS}/main_install.sh "${IMAGE_ITEMS}"
+RUN "${INST_SCRIPTS}/main_install.sh" "${IMAGE_ITEMS}"
 
 ######### Customize Container Here ###########
 
