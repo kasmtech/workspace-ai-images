@@ -1,0 +1,37 @@
+ARG BASE_TAG="develop"
+ARG BASE_IMAGE="ubuntu-noble-nvidia"
+ARG IMAGE_ITEMS="only_office,orange,temurin_java,refine,weka,vs_code,_config/default_keyring"
+ENV STARTUPDIR=/dockerstartup
+ENV INST_SCRIPTS=$STARTUPDIR/install
+
+FROM ubuntu AS builder
+USER root
+COPY ./src/ubuntu/install /install
+RUN chmod +x /install/prep.sh && \
+    /install/prep.sh "${IMAGE_ITEMS},_config/custom_startup" && \
+    chmod +x /install/main_install.sh && \
+    cp /install/main_install.sh $INST_SCRIPTS
+
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+USER root
+
+ENV HOME=/home/kasm-default-profile
+ENV JAVA_VERSION="17-jre"
+ENV REFINE_VERSION="3.9.3"
+ARG VSCODE_EXTENSIONS="ms-toolsai.datawrangler,saoudrizwan.claude-dev"
+WORKDIR $HOME
+
+COPY --from=builder ${INST_SCRIPTS}/ ${INST_SCRIPTS}/
+
+RUN ${INST_SCRIPTS}/main_install.sh "${IMAGE_ITEMS}"
+
+######### Customize Container Here ###########
+
+######### End Customizations ###########
+
+ENV HOME=/home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000
+
