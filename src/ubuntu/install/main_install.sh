@@ -67,16 +67,7 @@ echo "${IMAGE_ITEMS_LIST}" | tr ',' '\n' | while IFS= read -r item_path_from_arg
 
     # Construct the relative path for the specific install script
     # (relative to INST_SCRIPTS)
-    install_script_relative_path=""
-    if [ "${item_directory}" = "." ]; then
-        # Item is at the root level, e.g., "only_office"
-        # Script will be: install_only_office.sh
-        install_script_relative_path="install_${item_basename}.sh"
-    else
-        # Item is in a subdirectory, e.g., "_config/custom_startup"
-        # Script will be: _config/install_custom_startup.sh
-        install_script_relative_path="${item_directory}/install_${item_basename}.sh"
-    fi
+    install_script_relative_path="${item_path}/install_${item_basename}.sh"
 
     FULL_INSTALL_SCRIPT_PATH="${INST_SCRIPTS}/${install_script_relative_path}"
 
