@@ -74,20 +74,20 @@ echo "${IMAGE_ITEMS_LIST}" | tr ',' '\n' | while IFS= read -r item_path_from_arg
     log "Looking for individual installer script: ${FULL_INSTALL_SCRIPT_PATH}"
 
     if [ -f "${FULL_INSTALL_SCRIPT_PATH}" ]; then
-        if [ -x "${FULL_INSTALL_SCRIPT_PATH}" ]; then
-            log "Executing: ${FULL_INSTALL_SCRIPT_PATH}"
-            # Execute the script.
-            # If the script needs context like the item's path in $INST_SCRIPTS,
-            # you might pass it as an argument: "${FULL_INSTALL_SCRIPT_PATH}" "${INST_SCRIPTS}/${item_path}"
-            if "${FULL_INSTALL_SCRIPT_PATH}"; then
-                log "Successfully executed ${FULL_INSTALL_SCRIPT_PATH} for item '${item_path}'."
-            else
-                # set -e will cause script to exit if FULL_INSTALL_SCRIPT_PATH returns non-zero
-                log "Error during execution of ${FULL_INSTALL_SCRIPT_PATH} for item '${item_path}'. Exit code: $?." >&2
-                # If not using 'set -e', you'd want to 'exit 1' here.
-            fi
+        if [ ! -x "${FULL_INSTALL_SCRIPT_PATH}" ]; then
+            log "Making executable: ${FULL_INSTALL_SCRIPT_PATH}"
+            chmod +x "${FULL_INSTALL_SCRIPT_PATH}"
+        fi
+        log "Executing: ${FULL_INSTALL_SCRIPT_PATH}"
+        # Execute the script.
+        # If the script needs context like the item's path in $INST_SCRIPTS,
+        # you might pass it as an argument: "${FULL_INSTALL_SCRIPT_PATH}" "${INST_SCRIPTS}/${item_path}"
+        if "${FULL_INSTALL_SCRIPT_PATH}"; then
+            log "Successfully executed ${FULL_INSTALL_SCRIPT_PATH} for item '${item_path}'."
         else
-            log "Warning: Installer script '${FULL_INSTALL_SCRIPT_PATH}' found but is not executable. Skipping for item '${item_path}'." >&2
+            # set -e will cause script to exit if FULL_INSTALL_SCRIPT_PATH returns non-zero
+            log "Error during execution of ${FULL_INSTALL_SCRIPT_PATH} for item '${item_path}'. Exit code: $?." >&2
+            # If not using 'set -e', you'd want to 'exit 1' here.
         fi
     else
         log "Warning: Installer script '${FULL_INSTALL_SCRIPT_PATH}' not found. Skipping installation for item '${item_path}'." >&2
