@@ -17,7 +17,7 @@ Create a **File Mapping** as follows:
 * **Type** `Text`
 * **Name** `Demo Config`
 * **Description** `Demo Config`
-* **Destination PAth** `/dockerstartup/custom_startup/100-orange.once.sh`
+* **Destination Path** `/dockerstartup/custom_startup/100-orange.once.sh`
 * **Executable** Enabled
 * **Writeable** Disabled
 
