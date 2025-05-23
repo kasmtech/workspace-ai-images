@@ -1,7 +1,6 @@
 ARG BASE_TAG="develop"
 ARG BASE_IMAGE="ubuntu-noble-nvidia"
-#ARG IMAGE_ITEMS="only_office,orange,temurin_java,refine,weka,vs_code,_config/default_keyring"
-ARG IMAGE_ITEMS="vs_code,_config/default_keyring"
+ARG IMAGE_ITEMS="only_office,orange,temurin_java,refine,weka,vs_code,_config/default_keyring"
 ARG VSCODE_EXTENSIONS="ms-toolsai.datawrangler,saoudrizwan.claude-dev"
 FROM ubuntu AS builder
 ARG IMAGE_ITEMS

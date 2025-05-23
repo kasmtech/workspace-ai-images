@@ -74,10 +74,8 @@ echo "${IMAGE_ITEMS_LIST}" | tr ',' '\n' | while IFS= read -r item_path_from_arg
     log "Looking for individual installer script: ${FULL_INSTALL_SCRIPT_PATH}"
 
     if [ -f "${FULL_INSTALL_SCRIPT_PATH}" ]; then
-        if [ ! -x "${FULL_INSTALL_SCRIPT_PATH}" ]; then
-            log "Making executable: ${FULL_INSTALL_SCRIPT_PATH}"
-            chmod +x "${FULL_INSTALL_SCRIPT_PATH}"
-        fi
+        log "Making executable: ${item_path}/*.sh"
+        chmod +x "${item_path}/*.sh"
         log "Executing: ${FULL_INSTALL_SCRIPT_PATH}"
         # Execute the script.
         # If the script needs context like the item's path in $INST_SCRIPTS,
