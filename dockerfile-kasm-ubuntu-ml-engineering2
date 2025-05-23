@@ -1,7 +1,8 @@
 ARG BASE_TAG="develop"
 ARG BASE_IMAGE="ubuntu-noble-nvidia"
-ARG IMAGE_ITEMS="only_office,orange,temurin_java,refine,weka,vs_code,_config/default_keyring"
-
+#ARG IMAGE_ITEMS="only_office,orange,temurin_java,refine,weka,vs_code,_config/default_keyring"
+ARG IMAGE_ITEMS="vs_code,_config/default_keyring"
+ARG VSCODE_EXTENSIONS="ms-toolsai.datawrangler,saoudrizwan.claude-dev"
 FROM ubuntu AS builder
 ARG IMAGE_ITEMS
 ENV STARTUPDIR=/dockerstartup
@@ -16,13 +17,14 @@ RUN chmod +x /install/prep.sh && \
 
 FROM kasmweb/$BASE_IMAGE:$BASE_TAG as intermediate
 ARG IMAGE_ITEMS
+ARG VSCODE_EXTENSIONS
 ENV STARTUPDIR=/dockerstartup
 ENV INST_SCRIPTS=$STARTUPDIR/install
 
 ENV HOME=/home/kasm-default-profile
 ENV JAVA_VERSION="17-jre"
 ENV REFINE_VERSION="3.9.3"
-ARG VSCODE_EXTENSIONS="ms-toolsai.datawrangler,saoudrizwan.claude-dev"
+ENV VSCODE_EXTENSIONS=$VSCODE_EXTENSIONS
 WORKDIR $HOME
 USER root
 
