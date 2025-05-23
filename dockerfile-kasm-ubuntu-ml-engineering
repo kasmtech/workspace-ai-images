@@ -1,50 +1,45 @@
 ARG BASE_TAG="develop"
 ARG BASE_IMAGE="ubuntu-noble-nvidia"
-FROM kasmweb/$BASE_IMAGE:$BASE_TAG
-USER root
-
-ENV HOME=/home/kasm-default-profile
+ARG IMAGE_ITEMS="only_office,orange,temurin_java,refine,weka,vs_code,_config/default_keyring"
+ARG VSCODE_EXTENSIONS="ms-toolsai.datawrangler,saoudrizwan.claude-dev"
+FROM ubuntu AS builder
+ARG IMAGE_ITEMS
 ENV STARTUPDIR=/dockerstartup
 ENV INST_SCRIPTS=$STARTUPDIR/install
+USER root
+
+COPY ./src/ubuntu/install /install
+RUN chmod +x /install/prep.sh && \
+    /install/prep.sh "${IMAGE_ITEMS},_config/custom_startup" && \
+    chmod +x /install/main_install.sh && \
+    cp /install/main_install.sh $INST_SCRIPTS
+
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG AS intermediate
+ARG IMAGE_ITEMS
+ARG VSCODE_EXTENSIONS
+ENV STARTUPDIR=/dockerstartup
+ENV INST_SCRIPTS=$STARTUPDIR/install
+
+ENV HOME=/home/kasm-default-profile
 ENV JAVA_VERSION="17-jre"
 ENV REFINE_VERSION="3.9.3"
-ARG VSCODE_EXTENSIONS="ms-toolsai.datawrangler,saoudrizwan.claude-dev"
+ENV VSCODE_EXTENSIONS=$VSCODE_EXTENSIONS
 WORKDIR $HOME
+USER root
 
-COPY ./src/ubuntu/config/custom_startup $INST_SCRIPTS/custom_startup/
-RUN mv "$INST_SCRIPTS/custom_startup/start_custom_startup.fragment" "$STARTUPDIR/custom_startup.sh" \
-    && chmod +x "$STARTUPDIR/custom_startup.sh" \
-    && mkdir "$STARTUPDIR/custom_startup"
+COPY --from=builder ${INST_SCRIPTS} ${INST_SCRIPTS}
 
-######### Customize Container Here ###########
+RUN "${INST_SCRIPTS}/main_install.sh" "${IMAGE_ITEMS}"
 
-COPY ./src/ubuntu/install/only_office $INST_SCRIPTS/only_office/
-RUN bash $INST_SCRIPTS/only_office/install_only_office.sh  && rm -rf $INST_SCRIPTS/only_office/
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+ENV STARTUPDIR=/dockerstartup
+ENV INST_SCRIPTS=$STARTUPDIR/install
 
-COPY ./src/ubuntu/install/orange $INST_SCRIPTS/orange/
-RUN bash $INST_SCRIPTS/orange/install_orange.sh  && rm -rf $INST_SCRIPTS/orange/
+ENV HOME=/home/kasm-default-profile
+WORKDIR $HOME
+USER root
 
-COPY ./src/ubuntu/install/temurin_java $INST_SCRIPTS/temurin_java/
-RUN bash $INST_SCRIPTS/temurin_java/install_temurin_java.sh  && rm -rf $INST_SCRIPTS/temurin_java/
-
-COPY ./src/ubuntu/install/refine $INST_SCRIPTS/refine/
-RUN bash $INST_SCRIPTS/refine/install_refine.sh  && rm -rf $INST_SCRIPTS/refine/
-
-COPY ./src/ubuntu/install/weka $INST_SCRIPTS/weka/
-RUN bash $INST_SCRIPTS/weka/install_weka.sh  && rm -rf $INST_SCRIPTS/weka/
-
-# We already have VS Code from base, install the extensions
-COPY ./src/ubuntu/install/vs_code $INST_SCRIPTS/vs_code/
-RUN bash $INST_SCRIPTS/vs_code/install_extensions.sh "$VSCODE_EXTENSIONS"  && rm -rf $INST_SCRIPTS/vs_code/
-
-COPY ./src/ubuntu/config/default_keyring $INST_SCRIPTS/default_keyring/
-RUN bash $INST_SCRIPTS/default_keyring/install_default_keyring.sh  && rm -rf $INST_SCRIPTS/default_keyring/
-
-
-######### End Customizations ###########
-RUN cat "$INST_SCRIPTS/custom_startup/end_custom_startup.fragment" >> $STARTUPDIR/custom_startup.sh && rm "$INST_SCRIPTS/custom_startup/end_custom_startup.fragment"
-
-RUN chown 1000:0 $HOME
+COPY --from=intermediate / /
 
 ENV HOME=/home/kasm-user
 WORKDIR $HOME
