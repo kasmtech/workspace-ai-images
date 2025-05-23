@@ -75,7 +75,7 @@ echo "${IMAGE_ITEMS_LIST}" | tr ',' '\n' | while IFS= read -r item_path_from_arg
 
     if [ -f "${FULL_INSTALL_SCRIPT_PATH}" ]; then
         log "Making executable: ${INST_SCRIPTS}/${item_path}/*.sh"
-        chmod +x "${INST_SCRIPTS}/${item_path}/*.sh"
+        find "${INST_SCRIPTS}/${item_path}" -name "*.sh" -exec chmod +x {} \;
         log "Executing: ${FULL_INSTALL_SCRIPT_PATH}"
         # Execute the script.
         # If the script needs context like the item's path in $INST_SCRIPTS,
