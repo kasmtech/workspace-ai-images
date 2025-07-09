@@ -2,7 +2,8 @@
 set -ex
 
 # Has support for sudo command logging
-sudo_version_path=${SUDO_VERSION_PATH:-"SUDO_1_9_16p2/sudo_1.9.16-3_"}
+sudo_version_path=${SUDO_VERSION_PATH:-"v1.9.17p1/sudo_1.9.17-2_"}
+
 ubuntu_version="$(cat /etc/lsb-release | grep RELEASE | cut -d= -f2 | tr -d '.')" && \
 arch_name=$(arch) && \
 case "$arch_name" in \
