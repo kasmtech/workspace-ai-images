@@ -1,0 +1,30 @@
+#!/bin/bash
+
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+CUSTOM_STARTUP_DIR="${SCRIPT_DIR}/custom_startup"
+
+if [ ! -d "$CUSTOM_STARTUP_DIR" ]; then
+    echo "Error: custom_startup directory does not exist at: $CUSTOM_STARTUP_DIR"
+    exit 0
+fi
+
+found_files=0
+
+for script in "${CUSTOM_STARTUP_DIR}"/*.once.sh; do
+    # Check if the glob expanded to actual files
+    if [ -f "$script" ]; then
+        echo "Running: $(basename "$script")"
+        chmod +x "$script"
+        "$script"
+        found_files=$((found_files + 1))
+    fi
+done
+
+if [ $found_files -eq 0 ]; then
+    echo "No *.once.sh files found in $CUSTOM_STARTUP_DIR"
+else
+    echo "Executed $found_files script(s)"
+fi
+

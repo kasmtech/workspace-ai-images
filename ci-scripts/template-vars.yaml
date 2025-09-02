@@ -15,6 +15,18 @@ singleImages:
       - src/ubuntu/install/anythingllm/**
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/p11-kit/**
+  - name: ubuntu-noble-ml-engineering
+    singleapp: false
+    base: ubuntu-noble-nvidia
+    dockerfile: dockerfile-kasm-ubuntu-ml-engineering
+    changeFiles:
+      - dockerfile-kasm-ubuntu-ml-engineering
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/orange/**
+      - src/ubuntu/install/refine/**
+      - src/ubuntu/install/temurin_java/**
+      - src/ubuntu/install/p11-kit/**
 #  - name: squid-proxy
 #    skiptest: true
 #    singleapp: false

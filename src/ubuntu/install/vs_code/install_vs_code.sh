@@ -17,11 +17,9 @@ chmod +x $HOME/Desktop/code.desktop
 chown 1000:1000 $HOME/Desktop/code.desktop
 rm vs_code.deb
 
-# Conveniences for python development
-apt-get update
-apt-get install -y python3-setuptools \
-                   python3-venv \
-                   python3-virtualenv
+if [[ -n "${VSCODE_EXTENSIONS:-}" ]]; then
+  "$(dirname "$0")/install_extensions.sh" "$VSCODE_EXTENSIONS"
+fi
 
 # Cleanup for app layer
 chown -R 1000:0 $HOME
