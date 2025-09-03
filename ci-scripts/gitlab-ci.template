@@ -31,6 +31,10 @@ before_script:
       when: never
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET == "schedule"
       when: never
+    - if: $PARENT_PIPELINE_SOURCE == "schedule"
+      when: always
+    - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
+      when: always
     - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
       when: always
 
