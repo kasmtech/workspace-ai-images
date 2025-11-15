@@ -1,9 +1,9 @@
 ############
 # Settings #
 ############
-image: docker:24.0.6
+image: docker:28.0.0
 services:
-  - docker:24.0.6-dind
+  - docker:28.0.0-dind
 stages:
   - readme
   - revert
@@ -17,6 +17,8 @@ variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
   TEST_INSTALLER: "{{ TEST_INSTALLER }}"
+default:
+  retry: 2
 before_script:
   - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
   - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
