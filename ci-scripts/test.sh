@@ -169,12 +169,13 @@ for IP in "${IPS[@]}"; do
   scp \
     -oStrictHostKeyChecking=no \
     /root/.docker/config.json \
+    ci-scripts/docker-install.sh \
     ${USER}@${IP}:/tmp/
   ssh \
     -oConnectTimeout=10 \
     -oStrictHostKeyChecking=no \
     ${USER}@${IP} \
-    "sudo mkdir -p /root/.docker && sudo mv /tmp/config.json /root/.docker/ && sudo chown root:root /root/.docker/config.json"
+    "sudo mkdir -p /root/.docker && sudo mv /tmp/config.json /root/.docker/ && sudo chown root:root /root/.docker/config.json && sudo bash /tmp/docker-install.sh"
 done
 
 # Install Kasm workspaces
@@ -188,7 +189,7 @@ ssh \
 ready_check
 
 # Pull tester image
-docker pull ${ORG_NAME}/kasm-tester:1.16.0
+docker pull ${ORG_NAME}/kasm-tester:1.17.0
 
 # Run test
 cp /root/.ssh/id_rsa $(dirname ${CI_PROJECT_DIR})/sshkey
@@ -210,7 +211,7 @@ docker run --rm \
   -e REPO=workspaces-images \
   -e AUTOMATED=true \
   -v $(dirname ${CI_PROJECT_DIR})/sshkey:/sshkey:ro  ${SLIM_FLAG} \
-  kasmweb/kasm-tester:1.16.0
+  kasmweb/kasm-tester:1.17.0
 
 # Shutdown Instances
 turnoff

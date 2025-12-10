@@ -1,17 +1,19 @@
 ############
 # Settings #
 ############
-image: docker:24.0.6
+image: docker:28.0.0
 services:
-  - docker:24.0.6-dind
+  - docker:28.0.0-dind
 stages:
   - template
   - run
+default:
+  retry: 2
 variables:
   BASE_TAG: "develop"
   USE_PRIVATE_IMAGES: 0
-  KASM_RELEASE: "1.16.0"
-  TEST_INSTALLER: "https://kasm-static-content.s3.amazonaws.com/kasm_release_1.16.0.a1d5b7.tar.gz"
+  KASM_RELEASE: "1.17.0"
+  TEST_INSTALLER: "https://kasm-static-content.s3.amazonaws.com/kasm_release_1.17.0.bbc15c.tar.gz"
 before_script:
   - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
 
