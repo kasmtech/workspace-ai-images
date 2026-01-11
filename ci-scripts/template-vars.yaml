@@ -3,9 +3,7 @@ files: &UNIVERSAL_CHANGE_FILES
   - ci-scripts/**
   - .gitlab-ci.yml
 
-multiImages: []
-
-singleImages:
+multiImages:
   - name: claude-code
     singleapp: true
     base: core-ubuntu-jammy
@@ -73,6 +71,8 @@ singleImages:
       - src/ubuntu/install/gemini/**
       - src/ubuntu/install/codex/**
       - src/ubuntu/install/cursor/**
+
+singleImages:
   - name: ubuntu-noble-anythingllm
     singleapp: false
     base: core-ubuntu-noble
