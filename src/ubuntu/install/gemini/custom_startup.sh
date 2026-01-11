@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+set -ex
+START_COMMAND="xfce4-terminal -e gemini"
+PGREP="gemini"
+export MAXIMIZE="false"
+export MAXIMIZE_NAME="Terminal"
+MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
+DEFAULT_ARGS=""
+ARGS=${APP_ARGS:-$DEFAULT_ARGS}
+
+# Process non-option arguments.
+for arg; do
+    echo "arg! $arg"
+done
+
+FORCE=$2
+
+# run with vgl if GPU is available
+if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "${KASM_EGL_CARD}" ] && [ ! -z "${KASM_RENDERD}" ] && [ -O "${KASM_RENDERD}" ] && [ -O "${KASM_EGL_CARD}" ] ; then
+    START_COMMAND="/opt/VirtualGL/bin/vglrun -d ${KASM_EGL_CARD} $START_COMMAND"
+fi
+
+# gemini api helper
+gemini_api_helper(){
+    # check if launch forms are used by checking for /tmp/launch_selections.json
+    if [ -f /tmp/launch_selections.json ] ; then
+        # parse /tmp/launch_selections.json to get the field "use_api_key" (boolean)
+        USE_API_KEY=$(jq -r '.use_api_key' /tmp/launch_selections.json)
+        if [ "$USE_API_KEY" != "true" ] ; then
+            echo "use_api_key is not true. Skipping API Key helper with gemini"
+            return 1
+        fi
+    fi
+    
+    # check if GEMINI_API_KEY is set
+    if [ -z "$GEMINI_API_KEY" ] ; then
+        # load from launch_selections.json if exists
+        if [ -f /tmp/launch_selections.json ] ; then
+            GEMINI_API_KEY=$(jq -r '.gemini_api_key // empty' /tmp/launch_selections.json)
+            if [ -z "$GEMINI_API_KEY" ] ; then
+                echo "GEMINI_API_KEY is not set and not found in launch_selections.json. Skipping API Key helper configuration"
+                return 1
+            fi
+        fi
+        export GEMINI_API_KEY
+        echo "Loaded GEMINI_API_KEY from launch_selections.json"
+    fi
+}
+
+kasm_startup() {
+    if [ -n "$KASM_URL" ] ; then
+        URL=$KASM_URL
+    elif [ -z "$URL" ] ; then
+        URL=$LAUNCH_URL
+    fi
+
+    if [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ] ; then
+        gemini_api_helper || true
+        echo "Entering process startup loop"
+        set +x
+        while true
+        do
+            if ! pgrep -x $PGREP > /dev/null
+            then
+                /usr/bin/filter_ready
+                /usr/bin/desktop_ready
+                set +e
+                bash ${MAXIMIZE_SCRIPT} &
+                $START_COMMAND $ARGS $URL
+                set -e
+            fi
+            sleep 1
+        done
+        set -x
+
+    fi
+}
+
+
+kasm_startup
