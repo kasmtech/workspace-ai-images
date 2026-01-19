@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -ex
-START_COMMAND="xfce4-terminal -e gemini"
+START_COMMAND="xfce4-terminal --title Gemini -e gemini"
 PGREP="gemini"
-export MAXIMIZE="false"
-export MAXIMIZE_NAME="Terminal"
+export MAXIMIZE="true"
+export MAXIMIZE_NAME="Gemini"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 DEFAULT_ARGS=""
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
@@ -22,16 +22,6 @@ fi
 
 # gemini api helper
 gemini_api_helper(){
-    # check if launch forms are used by checking for /tmp/launch_selections.json
-    if [ -f /tmp/launch_selections.json ] ; then
-        # parse /tmp/launch_selections.json to get the field "use_api_key" (boolean)
-        USE_API_KEY=$(jq -r '.use_api_key' /tmp/launch_selections.json)
-        if [ "$USE_API_KEY" != "true" ] ; then
-            echo "use_api_key is not true. Skipping API Key helper with gemini"
-            return 1
-        fi
-    fi
-    
     # check if GEMINI_API_KEY is set
     if [ -z "$GEMINI_API_KEY" ] ; then
         # load from launch_selections.json if exists
@@ -60,7 +50,7 @@ kasm_startup() {
         set +x
         while true
         do
-            if ! pgrep -x $PGREP > /dev/null
+            if ! pgrep -f $PGREP > /dev/null
             then
                 /usr/bin/filter_ready
                 /usr/bin/desktop_ready

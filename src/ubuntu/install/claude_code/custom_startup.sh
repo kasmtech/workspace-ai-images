@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -ex
-START_COMMAND="xfce4-terminal -e claude"
+START_COMMAND="xfce4-terminal --title Claude -e claude"
 PGREP="claude"
-export MAXIMIZE="false"
-export MAXIMIZE_NAME="Terminal"
+export MAXIMIZE="true"
+export MAXIMIZE_NAME="Claude"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 DEFAULT_ARGS=""
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
@@ -22,16 +22,6 @@ fi
 
 # Claude Code requires a browser login flow even when an API key is provided via env variable. The API key is only parsed after the login flow is completed once. As a workaround, we create a helper script that provides the API key directly to Claude Code, bypassing the login flow. The API key can either be passed via the ANTHROPIC_API_KEY env variable or via launch form data stored in /tmp/launch_selections.json (https://github.com/anthropics/claude-code/issues/1084#issuecomment-3059222035)
 claude_api_helper(){
-    # check if launch forms are used by checking for /tmp/launch_selections.json
-    if [ -f /tmp/launch_selections.json ] ; then
-        # parse /tmp/launch_selections.json to get the field "use_api_key" (boolean)
-        USE_API_KEY=$(jq -r '.use_api_key' /tmp/launch_selections.json)
-        if [ "$USE_API_KEY" != "true" ] ; then
-            echo "use_api_key is not true. Skipping API Key helper with claude"
-            return 1
-        fi
-    fi
-
     # check if ANTHROPIC_API_KEY is set, if not try to parse from launch_selections.json
     if [ -z "$ANTHROPIC_API_KEY" ] ; then
         ANTHROPIC_API_KEY=$(jq -r '.anthropic_api_key // empty' /tmp/launch_selections.json)
@@ -44,7 +34,7 @@ claude_api_helper(){
     fi
 
     # Create API Key helper to parse api keys from either env variables or launch form without prompting a browser login flow
-        cat <<EOF > $HOME/.claude/claude_api_key_helper.sh
+    cat <<EOF > $HOME/.claude/claude_api_key_helper.sh
 #!/usr/bin/env bash
 echo $ANTHROPIC_API_KEY
 EOF
@@ -82,7 +72,7 @@ kasm_startup() {
         set +x
         while true
         do
-            if ! pgrep -x $PGREP > /dev/null
+            if ! pgrep -f $PGREP > /dev/null
             then
                 /usr/bin/filter_ready
                 /usr/bin/desktop_ready
