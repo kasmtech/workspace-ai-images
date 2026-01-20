@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -ex
-START_COMMAND="xfce4-terminal --title Codex -e codex"
+START_COMMAND="xfce4-terminal --maximize --title Codex -e codex"
 PGREP="codex"
-export MAXIMIZE="true"
+export MAXIMIZE="false"
 export MAXIMIZE_NAME="Codex"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 DEFAULT_ARGS=""

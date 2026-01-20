@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -ex
-START_COMMAND="xfce4-terminal --title Claude -e claude"
+START_COMMAND="xfce4-terminal --maximize --title Claude -e claude"
 PGREP="claude"
-export MAXIMIZE="true"
+export MAXIMIZE="false"
 export MAXIMIZE_NAME="Claude"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 DEFAULT_ARGS=""

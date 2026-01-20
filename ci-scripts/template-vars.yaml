@@ -14,6 +14,7 @@ multiImages:
       - src/ubuntu/install/tools/**
       - src/ubuntu/install/misc/**
       - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/chromium/**
       - src/ubuntu/install/vs_code/**
   - name: codex-cli
     singleapp: true
@@ -26,6 +27,7 @@ multiImages:
       - src/ubuntu/install/tools/**
       - src/ubuntu/install/misc/**
       - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/chromium/**
       - src/ubuntu/install/vs_code/**
   - name: cursor
     singleapp: true
@@ -36,6 +38,7 @@ multiImages:
       - src/ubuntu/install/cursor/**
       - src/ubuntu/install/tools/**
       - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/chromium/**
   - name: gemini-cli
     singleapp: true
     base: core-ubuntu-jammy
@@ -47,6 +50,7 @@ multiImages:
       - src/ubuntu/install/tools/**
       - src/ubuntu/install/misc/**
       - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/chromium/**
       - src/ubuntu/install/vs_code/**
   - name: ubuntu-jammy-desktop-ai-dev
     singleapp: false

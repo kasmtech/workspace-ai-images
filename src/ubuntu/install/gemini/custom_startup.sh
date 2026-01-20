@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -ex
-START_COMMAND="xfce4-terminal --title Gemini -e gemini"
+START_COMMAND="xfce4-terminal --maximize --title Gemini -e gemini"
 PGREP="gemini"
-export MAXIMIZE="true"
+export MAXIMIZE="false"
 export MAXIMIZE_NAME="Gemini"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 DEFAULT_ARGS=""
