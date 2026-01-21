@@ -46,23 +46,12 @@ kasm_startup() {
 
     if [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ] ; then
         gemini_api_helper || true
-        echo "Entering process startup loop"
-        set +x
-        while true
-        do
-            if ! pgrep -f $PGREP > /dev/null
-            then
-                /usr/bin/filter_ready
-                /usr/bin/desktop_ready
-                set +e
-                bash ${MAXIMIZE_SCRIPT} &
-                $START_COMMAND $ARGS $URL
-                set -e
-            fi
-            sleep 1
-        done
-        set -x
-
+        /usr/bin/filter_ready
+        /usr/bin/desktop_ready
+        set +e
+        bash ${MAXIMIZE_SCRIPT} &
+        $START_COMMAND $ARGS $URL
+        set -e
     fi
 }
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -ex
+# return 1
 START_COMMAND="xfce4-terminal --maximize --title Claude -e claude"
 PGREP="claude"
 export MAXIMIZE="false"
@@ -68,23 +69,12 @@ kasm_startup() {
 
     if [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ] ; then
         claude_api_helper || true
-        echo "Entering process startup loop"
-        set +x
-        while true
-        do
-            if ! pgrep -f $PGREP > /dev/null
-            then
-                /usr/bin/filter_ready
-                /usr/bin/desktop_ready
-                set +e
-                bash ${MAXIMIZE_SCRIPT} &
-                $START_COMMAND $ARGS $URL
-                set -e
-            fi
-            sleep 1
-        done
-        set -x
-
+        /usr/bin/filter_ready
+        /usr/bin/desktop_ready
+        set +e
+        bash ${MAXIMIZE_SCRIPT} &
+        $START_COMMAND $ARGS $URL
+        set -e
     fi
 }
 
