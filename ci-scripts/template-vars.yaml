@@ -3,7 +3,78 @@ files: &UNIVERSAL_CHANGE_FILES
   - ci-scripts/**
   - .gitlab-ci.yml
 
-multiImages: []
+multiImages:
+  - name: claude-code
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-claude-code
+    changeFiles:
+      - dockerfile-kasm-claude-code
+      - src/ubuntu/install/claude_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/vs_code/**
+  - name: codex-cli
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-codex-cli
+    changeFiles:
+      - dockerfile-kasm-codex-cli
+      - src/ubuntu/install/codex/**
+      - src/ubuntu/install/npm/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/vs_code/**
+  - name: cursor
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-cursor
+    changeFiles:
+      - dockerfile-kasm-cursor
+      - src/ubuntu/install/cursor/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/chromium/**
+  - name: gemini-cli
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-gemini-cli
+    changeFiles:
+      - dockerfile-kasm-gemini-cli
+      - src/ubuntu/install/gemini/**
+      - src/ubuntu/install/npm/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/vs_code/**
+  - name: ubuntu-jammy-desktop-ai-dev
+    singleapp: false
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-ubuntu-jammy-desktop-ai-dev
+    changeFiles:
+      - dockerfile-kasm-ubuntu-jammy-desktop-ai-dev
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/gamepad_utils/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/npm/**
+      - src/ubuntu/install/claude_code/**
+      - src/ubuntu/install/gemini/**
+      - src/ubuntu/install/codex/**
+      - src/ubuntu/install/cursor/**
 
 singleImages:
   - name: ubuntu-noble-anythingllm

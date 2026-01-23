@@ -1,0 +1,1 @@
+Codex CLI - OpenAI's command-line interface for code generation and completion using GPT models directly from your terminal

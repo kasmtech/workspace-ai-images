@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -ex
+START_COMMAND="xfce4-terminal --maximize --title Codex -e codex"
+PGREP="codex"
+export MAXIMIZE="false"
+export MAXIMIZE_NAME="Codex"
+MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
+DEFAULT_ARGS=""
+ARGS=${APP_ARGS:-$DEFAULT_ARGS}
+
+# Process non-option arguments.
+for arg; do
+    echo "arg! $arg"
+done
+
+FORCE=$2
+
+# run with vgl if GPU is available
+if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "${KASM_EGL_CARD}" ] && [ ! -z "${KASM_RENDERD}" ] && [ -O "${KASM_RENDERD}" ] && [ -O "${KASM_EGL_CARD}" ] ; then
+    START_COMMAND="/opt/VirtualGL/bin/vglrun -d ${KASM_EGL_CARD} $START_COMMAND"
+fi
+
+# codex api helper
+codex_api_helper(){    
+    # check if OPENAI_API_KEY is set
+    if [ -z "$OPENAI_API_KEY" ] ; then
+        # load from launch_selections.json if exists
+        if [ -f /tmp/launch_selections.json ] ; then
+            OPENAI_API_KEY=$(jq -r '.openai_api_key // empty' /tmp/launch_selections.json)
+            if [ -z "$OPENAI_API_KEY" ] ; then
+                echo "OPENAI_API_KEY is not set and not found in launch_selections.json. Skipping API Key helper configuration"
+                return 1
+            fi
+        fi
+        export OPENAI_API_KEY
+        echo "Loaded OPENAI_API_KEY from launch_selections.json"
+    fi
+}
+
+kasm_startup() {
+    if [ -n "$KASM_URL" ] ; then
+        URL=$KASM_URL
+    elif [ -z "$URL" ] ; then
+        URL=$LAUNCH_URL
+    fi
+
+    if [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ] ; then
+        codex_api_helper || true
+        /usr/bin/filter_ready
+        /usr/bin/desktop_ready
+        set +e
+        bash ${MAXIMIZE_SCRIPT} &
+        $START_COMMAND $ARGS $URL
+        set -e
+    fi
+}
+
+
+kasm_startup
