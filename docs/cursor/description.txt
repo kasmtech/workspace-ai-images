@@ -1,1 +1,1 @@
-Cursor - AI-powered code editor with built-in AI assistance, code generation, and the Cursor Agent for autonomous coding tasks
+Cursor - AI-powered code editor with built-in assistance and an autonomous coding agent

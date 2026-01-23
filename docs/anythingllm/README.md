@@ -6,7 +6,7 @@
 
 *You will need access to a machine with a recent NVIDIA graphics card.*
 
-1. Ensure the Ollama host is setup with the appropriate NVIDIA drivers - follow [this](https://kasmweb.com/docs/latest/how_to/gpu.html#ubuntu-24-04-lts) script for a quick and easy way to do this for Ubuntu 24.04 systems. Reboot if necessary.
+1. Ensure the Ollama host is setup with the appropriate NVIDIA drivers - follow [this](https://kasm.com/docs/latest/how_to/gpu.html#ubuntu-24-04-lts) script for a quick and easy way to do this for Ubuntu 24.04 systems. Reboot if necessary.
 2. Install [ollama](https://ollama.com/) on a host with GPU `curl -fsSL https://ollama.com/install.sh | sh` (install docs [here](https://github.com/ollama/ollama/blob/main/docs/linux.md))
 3. Pull a model (e.g. `ollama pull phi4:latest`)
 4. Ensure ollama is serving the model, e.g:
