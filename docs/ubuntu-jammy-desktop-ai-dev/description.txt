@@ -1,0 +1,1 @@
+Ubuntu AI development desktop for Kasm Workspaces with Cursor IDE, Claude Code CLI, Gemini CLI, and Codex CLI
