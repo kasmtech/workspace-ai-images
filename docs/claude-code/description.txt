@@ -1,1 +1,1 @@
-Claude Code CLI - Anthropic's command-line interface for interacting with Claude AI models directly from your terminal
+Claude Code CLI - Anthropic's CLI for interacting with Claude AI models from your terminal
