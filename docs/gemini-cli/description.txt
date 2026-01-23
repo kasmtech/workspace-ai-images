@@ -1,0 +1,1 @@
+Gemini CLI - Google's command-line interface for interacting with Gemini AI models directly from your terminal
