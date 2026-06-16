@@ -48,6 +48,6 @@ A self-guided on-demand demo is available at [**kasmweb.com**](https://www.kasmw
 [Kasm_Workflow]: https://cdn2.hubspot.net/hubfs/5856039/dockerhub/kasm_workflow_960.gif "Kasm Workflow"
 
 
-## Reporting Issues
+# Reporting Issues
 
 To report any issues for this repository, please use our central issue tracker: **[Kasm Workspaces Issue Tracker](https://github.com/kasmtech/workspaces-issues/issues)**
