@@ -32,22 +32,23 @@ cp /opt/AnythingLLMDesktop/squashfs-root/*anythingllm*.desktop /usr/share/applic
 chmod +x $HOME/Desktop/anythingllm.desktop
 chmod +x /usr/share/applications/anythingllm.desktop
 
-# Install Ollama to /opt so it stays out of the user profile.
-# Kasm copies $HOME (kasm-default-profile) into persistent user profiles on launch,
-# so the ~1.3GB Ollama bundle must not live there.
-# The tarball's bin/ + lib/ollama/ layout is preserved so that the binary's
-# RPATH ($ORIGIN/../lib/ollama) resolves correctly from /opt/ollama/bin/.
-apt-get update
-apt-get install -y zstd
+# Ollama must already be installed (by src/ubuntu/install/ollama/install_ollama.sh,
+# which runs earlier in the Dockerfile). Fail fast with a clear message if it isn't.
+if [ ! -x /opt/ollama/bin/ollama ]; then
+  echo "ERROR: Ollama binary not found at /opt/ollama/bin/ollama." >&2
+  echo "       Run src/ubuntu/install/ollama/install_ollama.sh before install_anythingllm.sh." >&2
+  exit 1
+fi
 
-mkdir -p /opt/ollama
-curl -fsSL "https://github.com/ollama/ollama/releases/latest/download/ollama-linux-amd64.tar.zst" \
-  | tar -x --zstd -C /opt/ollama
-
-# AnythingLLM's OllamaProcessManager looks for the binary named 'llm', not 'ollama'
-mv /opt/ollama/bin/ollama /opt/ollama/bin/llm
-chmod +x /opt/ollama/bin/llm
+# AnythingLLM's OllamaProcessManager looks for the binary named 'llm', not 'ollama'.
+# Keep the real 'ollama' binary in place and expose 'llm' as a symlink so the manager
+# finds it. 
+ln -s ollama /opt/ollama/bin/llm
+chmod +x /opt/ollama/bin/ollama
 chown -R 1000:0 /opt/ollama
+
+# Expose 'ollama' on PATH so it can be invoked independently from the terminal.
+ln -s /opt/ollama/bin/ollama /usr/local/bin/ollama
 
 # Symlink the expected path in the default profile into /opt.
 # HOME is /home/kasm-default-profile at build time; Kasm seeds /home/kasm-user from it on launch.
