@@ -72,7 +72,7 @@ Once the steps are completed the system should be rebooted.
 
 # Accelerating workspaces
 
-**Note:** This step is required for workspace images that are _not_ in the [Kasm AI Registry](https://ai.registry.kasmweb.com/) and if you're running Kasm versions prior to 1.17.
+**Note:** This step is required for workspace images that are _not_ in the [Kasm AI Registry](https://ai.registry.kasm.com/) and if you're running Kasm versions prior to 1.17.
 
 Please ensure to set the correct enivronment variables in your Workspace configuration by modifying your Docker Run configuration to include:
 ```json
