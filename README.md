@@ -43,10 +43,48 @@ Kasm Workspaces was developed to meet the most demanding secure collaboration re
 # Live Demo
 A self-guided on-demand demo is available at [**kasm.com**](https://app.kasm.com/#/cast/kasmos)
 
+# Building Images
 
-[logo]: https://cdn2.hubspot.net/hubfs/5856039/dockerhub/kasm_logo.png "Kasm Logo"
-[Kasm_Workflow]: https://cdn2.hubspot.net/hubfs/5856039/dockerhub/kasm_workflow_960.gif "Kasm Workflow"
+Build scripts for creating workspace images locally are in `scripts/` and require
+[`yq`](https://github.com/mikefarah/yq) v4.53.3 (downloaded and sha256-verified automatically on first run; cached at `~/.cache/kasm/yq/`).
 
+All commands must be run from the repository root.
+
+## List available images
+
+```
+./scripts/build-image.sh --list-images
+```
+
+## Build an image
+
+To build an image directly (tagged `local_build` by default):
+
+```
+./scripts/build-image.sh --build kasmweb/claude-code
+```
+
+To inspect the `docker build` command before running it:
+
+```
+./scripts/build-image.sh --list-image-build-command kasmweb/claude-code
+```
+
+To list build commands for all images:
+
+```
+./scripts/build-image.sh --list-images-build-commands
+```
+
+Override the image tag with `-t`:
+
+```
+./scripts/build-image.sh --build kasmweb/claude-code -t my-tag
+```
+
+
+[logo]: https://5856039.fs1.hubspotusercontent-na1.net/hubfs/5856039/Kasm_Workspaces_Logo.png "Kasm Logo"
+[Kasm_Workflow]: https://5856039.fs1.hubspotusercontent-na1.net/hubfs/5856039/dockerhub/launching_ubuntu_jammy.gif "Kasm Workflow"
 
 # Reporting Issues
 
