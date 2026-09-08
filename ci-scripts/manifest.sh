@@ -1,15 +1,11 @@
 #! /bin/bash
 
-# Globals
-FAILED="false"
-
 # Ingest cli variables
 ## Parse input ##
 NAME=$1
 TYPE=$2
 REVERT_PIPELINE_ID=$3
 IS_ROLLING=$4
-SKIP_TEST=$5
 PULL_BRANCH=${SANITIZED_BRANCH}
 
 # Determine if this is a private or public build
@@ -39,37 +35,6 @@ if [ ! -z "${REVERT_PIPELINE_ID}" ]; then
       SANITIZED_BRANCH=${SANITIZED_BRANCH}-rolling-${SCHEDULE_NAME}
     fi
   fi
-fi
-
-# Check test output
-if [[ -z "${REVERT_PIPELINE_ID}" && "${SKIP_TEST}" != "True" ]]; then
-  echo Determining test status
-  apk add curl
-  if [[ "${TYPE}" == "multi" ]]; then
-    ARCHES=("x86_64" "aarch64")
-  else
-    ARCHES=("x86_64")
-  fi
-  for ARCH in "${ARCHES[@]}"; do
-
-    # Determine test status
-    STATUS=$(curl -sL https://kasm-ci.s3.amazonaws.com/${CI_COMMIT_SHA}/${ARCH}/kasmweb/image-cache-private/${ARCH}-${NAME}-${PULL_BRANCH}-${CI_PIPELINE_ID}/ci-status.yml | awk -F'"' '{print $2}')
-    if [ "${STATUS}" == "PASS" ]; then
-      STATE=success
-    else
-      STATE=failed
-      FAILED="true"
-    fi
-
-    # Ping gitlab api with link output
-    curl --request POST --header "PRIVATE-TOKEN:${GITLAB_API_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/statuses/${CI_COMMIT_SHA}?state=${STATE}&name=${NAME}_${ARCH}&target_url=https://kasm-ci.s3.amazonaws.com/${CI_COMMIT_SHA}/${ARCH}/kasmweb/image-cache-private/${ARCH}-${NAME}-${PULL_BRANCH}-${CI_PIPELINE_ID}/index.html"
-
-  done
-fi
-
-# Fail job and go no further if tests did not pass
-if [[ "${FAILED}" == "true" ]]; then
-  exit 1
 fi
 
 # Manifest for multi pull and push for single arch

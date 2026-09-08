@@ -16,15 +16,20 @@ variables:
   KASM_RELEASE: "{{ KASM_RELEASE }}"
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
-  TEST_INSTALLER: "{{ TEST_INSTALLER }}"
 default:
   retry: 2
-before_script:
-  - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
-  - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
+  before_script: !reference [.common_before_script, before_script]
 
 include:
   - component: $CI_SERVER_FQDN/kasm-technologies/internal/qa-infrastructure/monitor-in-grafana@develop
+
+# Shared login/branch-sanitizing lines, referenced both by `default:` above
+# and directly by the test_ jobs below, which override before_script to
+# install a docker CLI first.
+.common_before_script:
+  before_script:
+    - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
+    - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
 
 .run_rules:
   rules:
@@ -132,6 +137,12 @@ test_{{ IMAGE.name }}:
       - ARCH: [ "x86_64", "aarch64" ]
 {% else %}
   stage: test
+  image: "node:24"
+  before_script:
+    # node:24 has no docker CLI preinstalled, needed here for docker login
+    # and for the Playwright leg's own docker build/pull over ssh.
+    - apt-get update && apt-get install -y --no-install-recommends docker.io
+    - !reference [.common_before_script, before_script]
   extends:
     - .run_rules
     - .monitor-in-grafana
@@ -142,13 +153,22 @@ test_{{ IMAGE.name }}:
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
   script:
-    - apk add bash
     - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "${ARCH}" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}"
   needs:
     - job: build_{{ IMAGE.name }}
   tags:
     - oci-amd-scheduled
   retry: 1
+  artifacts:
+    # kasmweb-checkout/ prefix: test.sh runs playwright from that directory,
+    # so its relative output paths resolve there.
+    when: always
+    paths:
+      - kasmweb-checkout/playwright-results/
+      - kasmweb-checkout/test-results/
+    expire_in: 1 day
+    reports:
+      junit: kasmweb-checkout/playwright-results/results.xml
   parallel:
     matrix:
       - ARCH: [ "x86_64", "aarch64" ]
@@ -158,6 +178,11 @@ test_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 test_{{ IMAGE.name }}:
   stage: test
+  image: "node:24"
+  before_script:
+    # See the matching multiImages test_ job comment above -- same reasoning.
+    - apt-get update && apt-get install -y --no-install-recommends docker.io
+    - !reference [.common_before_script, before_script]
   extends:
     - .run_rules
     - .monitor-in-grafana
@@ -168,13 +193,21 @@ test_{{ IMAGE.name }}:
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
   script:
-    - apk add bash
     - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "x86_64" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}"
   needs:
     - job: build_{{ IMAGE.name }}
   tags:
     - oci-amd-scheduled
   retry: 1
+  artifacts:
+    # See the matching multiImages test_ job comment above -- same reasoning.
+    when: always
+    paths:
+      - kasmweb-checkout/playwright-results/
+      - kasmweb-checkout/test-results/
+    expire_in: 1 day
+    reports:
+      junit: kasmweb-checkout/playwright-results/results.xml
 {% endfor %}
 
 ############################################
@@ -187,10 +220,27 @@ manifest_{{ IMAGE.name }}:
   services:
     - docker:28.2.2-dind
   extends:
-    - .run_rules
     - .monitor-in-grafana
   rules:
-    - !reference [.run_rules, rules]
+    # Not !reference [.run_rules, rules] here -- .run_rules resolves the
+    # schedule/develop/release/MR cases to "when: always", which would
+    # publish this image regardless of whether test_{{ IMAGE.name }}
+    # passed. Manifest jobs need "on_success" instead, since manifest.sh no
+    # longer gates on a Selenium-written ci-status.yml itself.
+    - if: >
+        $README_USERNAME ||
+        $README_PASSWORD ||
+        $DOCKERHUB_REVERT ||
+        $REVERT_IS_ROLLING
+      when: never
+    - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET == "schedule"
+      when: never
+    - if: $PARENT_PIPELINE_SOURCE == "schedule"
+      when: on_success
+    - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
+      when: on_success
+    - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
+      when: on_success
     {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
@@ -200,9 +250,10 @@ manifest_{{ IMAGE.name }}:
     SCHEDULE_NAME: "{{ SCHEDULE_NAME }}"
   script:
     - apk add bash tar
-    - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "multi" "" "" {{ IMAGE.skiptest }}
+    - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "multi"
   needs:
     - job: test_{{ IMAGE.name }}
+      artifacts: false
   tags:
     - oci-amd-scheduled
 {% endfor %}
@@ -214,10 +265,24 @@ manifest_{{ IMAGE.name }}:
   services:
     - docker:28.2.2-dind
   extends:
-    - .run_rules
     - .monitor-in-grafana
   rules:
-    - !reference [.run_rules, rules]
+    # See the matching multiImages manifest_ job comment above -- same
+    # on_success reasoning.
+    - if: >
+        $README_USERNAME ||
+        $README_PASSWORD ||
+        $DOCKERHUB_REVERT ||
+        $REVERT_IS_ROLLING
+      when: never
+    - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET == "schedule"
+      when: never
+    - if: $PARENT_PIPELINE_SOURCE == "schedule"
+      when: on_success
+    - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
+      when: on_success
+    - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
+      when: on_success
     {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
@@ -230,6 +295,7 @@ manifest_{{ IMAGE.name }}:
     - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "single"
   needs:
     - job: test_{{ IMAGE.name }}
+      artifacts: false
   tags:
     - oci-amd-scheduled
 {% endfor %}
