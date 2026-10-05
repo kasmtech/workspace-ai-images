@@ -22,7 +22,7 @@ variables:
   # kasmweb branch the Playwright specs are cloned from (see
   # ci-scripts/test.sh). DEVOPS-74 (KASM_TEST_IMAGE_REFS support) has merged
   # into kasmweb develop; switch to a release branch once one ships it.
-  KASMWEB_VERSION: "develop"
+  KASMWEB_VERSION: "feature/DEVOPS-165-174-merged"
 before_script:
   - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
 
