@@ -7,14 +7,24 @@ wget -q https://update.code.visualstudio.com/latest/linux-deb-${ARCH}/stable -O 
 apt-get update
 apt-get install -y ./vs_code.deb
 
-# Desktop icon
+# Desktop icon and launcher
+DESKTOP_NAME=com.microsoft.VSCode.desktop
+DESKTOP_FILE=/usr/share/applications/${DESKTOP_NAME}
+
 mkdir -p /usr/share/icons/hicolor/apps
 wget -O /usr/share/icons/hicolor/apps/vscode.svg https://kasm-static-content.s3.amazonaws.com/icons/vscode.svg
-sed -i '/Icon=/c\Icon=/usr/share/icons/hicolor/apps/vscode.svg' /usr/share/applications/code.desktop
-sed -i 's#/usr/share/code/code#/usr/share/code/code --no-sandbox##' /usr/share/applications/code.desktop
-cp /usr/share/applications/code.desktop $HOME/Desktop
-chmod +x $HOME/Desktop/code.desktop
-chown 1000:1000 $HOME/Desktop/code.desktop
+
+if [ -f "$DESKTOP_FILE" ]; then
+  sed -i '/Icon=/c\Icon=/usr/share/icons/hicolor/apps/vscode.svg' "$DESKTOP_FILE"
+  sed -i 's#/usr/share/code/code#/usr/share/code/code --no-sandbox#' "$DESKTOP_FILE"
+  mkdir -p "$HOME/Desktop"
+  cp "$DESKTOP_FILE" "$HOME/Desktop/${DESKTOP_NAME}"
+  chmod +x "$HOME/Desktop/${DESKTOP_NAME}"
+  chown 1000:1000 "$HOME/Desktop/${DESKTOP_NAME}"
+else
+  echo "WARNING: $DESKTOP_FILE not found; skipping desktop launcher setup"
+fi
+
 rm vs_code.deb
 
 if [[ -n "${VSCODE_EXTENSIONS:-}" ]]; then
