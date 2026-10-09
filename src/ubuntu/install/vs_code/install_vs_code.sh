@@ -13,17 +13,12 @@ DESKTOP_FILE=/usr/share/applications/${DESKTOP_NAME}
 
 mkdir -p /usr/share/icons/hicolor/apps
 wget -O /usr/share/icons/hicolor/apps/vscode.svg https://kasm-static-content.s3.amazonaws.com/icons/vscode.svg
-
-if [ -f "$DESKTOP_FILE" ]; then
-  sed -i '/Icon=/c\Icon=/usr/share/icons/hicolor/apps/vscode.svg' "$DESKTOP_FILE"
-  sed -i 's#/usr/share/code/code#/usr/share/code/code --no-sandbox#' "$DESKTOP_FILE"
-  mkdir -p "$HOME/Desktop"
-  cp "$DESKTOP_FILE" "$HOME/Desktop/${DESKTOP_NAME}"
-  chmod +x "$HOME/Desktop/${DESKTOP_NAME}"
-  chown 1000:1000 "$HOME/Desktop/${DESKTOP_NAME}"
-else
-  echo "WARNING: $DESKTOP_FILE not found; skipping desktop launcher setup"
-fi
+sed -i '/Icon=/c\Icon=/usr/share/icons/hicolor/apps/vscode.svg' "$DESKTOP_FILE"
+sed -i 's#/usr/share/code/code#/usr/share/code/code --no-sandbox#' "$DESKTOP_FILE"
+mkdir -p "$HOME/Desktop"
+cp "$DESKTOP_FILE" "$HOME/Desktop/${DESKTOP_NAME}"
+chmod +x "$HOME/Desktop/${DESKTOP_NAME}"
+chown 1000:1000 "$HOME/Desktop/${DESKTOP_NAME}"
 
 rm vs_code.deb
 
